@@ -2,15 +2,49 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.supermoonie</groupId>
     <artifactId>AutoChrome</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>AutoChrome</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>AutoChrome</description>
+    <url>https://github.com/supermoonie/AutoChrome</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>wangchao</name>
+            <email>wangchao_moonie@163.com</email>
+            <organization>supermoonie</organization>
+            <organizationUrl>https://github.com/supermoonie</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>
+            scm:git:https://github.com/supermoonie/AutoChrome.git
+        </connection>
+        <developerConnection>
+            scm:git:https://github.com/supermoonie/AutoChrome.git
+        </developerConnection>
+        <url>https://github.com/supermoonie/AutoChrome</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
