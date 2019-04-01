@@ -101,6 +101,15 @@ public interface Domain extends Auto {
     }
 
     /**
+     * get Storage domain
+     *
+     * @return Storage
+     */
+    default Storage getStorage() {
+        return (Storage) getThis().getProxy(Storage.class);
+    }
+
+    /**
      * get Target domain
      *
      * @return Target
