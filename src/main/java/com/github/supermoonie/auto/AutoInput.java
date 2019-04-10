@@ -7,6 +7,7 @@ import com.github.supermoonie.type.input.Modifier;
 import com.github.supermoonie.type.input.MouseButtonType;
 import com.github.supermoonie.type.input.MouseEventType;
 
+import java.awt.*;
 import java.util.List;
 
 import static com.github.supermoonie.util.StringUtils.isEmpty;
@@ -57,13 +58,22 @@ public interface AutoInput extends Auto {
             throw new IllegalArgumentException("selector is empty !");
         }
         List<List<Double>> contentQuads = getThis().getContentQuads(selector);
-        Double x = contentQuads.get(0).get(0) + (contentQuads.get(0).get(2) - contentQuads.get(0).get(0)) / 2;
-        Double y = contentQuads.get(0).get(1) + (contentQuads.get(0).get(7) - contentQuads.get(0).get(1)) / 2;
+        double x = contentQuads.get(0).get(0) + (contentQuads.get(0).get(2) - contentQuads.get(0).get(0)) / 2;
+        double y = contentQuads.get(0).get(1) + (contentQuads.get(0).get(7) - contentQuads.get(0).get(1)) / 2;
         Input input = getThis().getInput();
         input.dispatchMouseEvent(MouseEventType.mousePressed, x, y, null, null,
                 MouseButtonType.left, 1, null, null);
         input.dispatchMouseEvent(MouseEventType.mouseReleased, x, y, null, null,
                 MouseButtonType.left, 1, null, null);
+    }
+
+    /**
+     * click
+     *
+     * @param point point
+     */
+    default void click(Point point) {
+        click(point.getX(), point.getY());
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.github.supermoonie.auto;
 
+import java.awt.*;
 import java.util.List;
 
 import static com.github.supermoonie.util.StringUtils.isEmpty;
@@ -79,6 +80,24 @@ public interface AutoDom extends Auto {
             return null;
         }
         return getThis().getDom().getContentQuads(nodeId, null, null);
+    }
+
+    /**
+     * getPoint
+     *
+     * @param nodeId nodeId
+     * @return Point
+     */
+    default Point getPoint(Integer nodeId) {
+        if (null == nodeId) {
+            return null;
+        }
+        List<List<Double>> contentQuads = getThis().getDom().getContentQuads(nodeId, null, null);
+        double x = contentQuads.get(0).get(0) + (contentQuads.get(0).get(2) - contentQuads.get(0).get(0)) / 2;
+        double y = contentQuads.get(0).get(1) + (contentQuads.get(0).get(7) - contentQuads.get(0).get(1)) / 2;
+        Point point = new Point();
+        point.setLocation(x, y);
+        return point;
     }
 
     /**
