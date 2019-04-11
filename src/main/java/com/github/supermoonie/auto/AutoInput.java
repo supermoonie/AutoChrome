@@ -123,7 +123,7 @@ public interface AutoInput extends Auto {
      * @param sliderButtonSelector slider button selector
      * @param sliderBoxSelector    slider box selector
      */
-    default void drag(String sliderButtonSelector, String sliderBoxSelector) {
+    default void drag(String sliderButtonSelector, String sliderBoxSelector, int steps, int sigma, int interval, int wait) {
         AutoChrome autoChrome = getThis();
         List<List<Double>> sliderBoxQuads = autoChrome.getContentQuads(sliderBoxSelector);
         Double width = sliderBoxQuads.get(0).get(2) - sliderBoxQuads.get(0).get(0);
@@ -131,15 +131,20 @@ public interface AutoInput extends Auto {
         Double x = sliderButtonQuads.get(0).get(0) + (sliderButtonQuads.get(0).get(2) - sliderButtonQuads.get(0).get(0)) / 2;
         Double y = sliderButtonQuads.get(0).get(1) + (sliderButtonQuads.get(0).get(7) - sliderButtonQuads.get(0).get(1)) / 2;
         Input input = autoChrome.getInput();
-        double step = (width + 12) / 55;
+        double stepWidth = (width + sigma) / steps;
         input.dispatchMouseEvent(MouseEventType.mousePressed, x, y, null, null, MouseButtonType.left, null, null, null);
-        for (int i = 1; i <= 55; i++) {
-            input.dispatchMouseEvent(MouseEventType.mouseMoved, x + step * i, y, null, null, MouseButtonType.left, null, null, null);
+        for (int i = 1; i <= steps; i++) {
+            input.dispatchMouseEvent(MouseEventType.mouseMoved, x + stepWidth * i, y, null, null, MouseButtonType.left, null, null, null);
             try {
-                Thread.sleep(10);
+                Thread.sleep(interval);
             } catch (InterruptedException e) {
                 throw new AutoChromeException(e);
             }
+        }
+        try {
+            Thread.sleep(wait);
+        } catch (InterruptedException e) {
+            throw new AutoChromeException(e);
         }
         input.dispatchMouseEvent(MouseEventType.mouseReleased, x + width, y, null, null, MouseButtonType.left, null, null, null);
     }
