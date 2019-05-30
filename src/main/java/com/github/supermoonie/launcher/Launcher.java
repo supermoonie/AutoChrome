@@ -4,13 +4,21 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.BindException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
+
+import static java.lang.Runtime.getRuntime;
+import static java.lang.System.getProperty;
+import static java.util.Arrays.asList;
+import static java.util.Locale.ENGLISH;
 
 /**
  * @author Administrator
@@ -19,6 +27,12 @@ import java.util.List;
 public class Launcher {
 
     private final Logger logger = LoggerFactory.getLogger(Launcher.class);
+
+    private static final String OS = getProperty("os.name").toLowerCase(ENGLISH);
+
+    private static final boolean WINDOWS = OS.startsWith("windows");
+
+    private static final boolean OSX = OS.startsWith("mac");
 
     private static final List<String> DEFAULT_ARGS = new ArrayList<String>() {{
         // Disable built-in Google Translate service
@@ -62,6 +76,10 @@ public class Launcher {
     private Process process;
 
     private List<String> command;
+
+    public void launch(List<String> args, int port) throws IOException {
+        launch(findChrome(), args, port);
+    }
 
     public void launch(String chromePath, List<String> args, int port) throws IOException {
         List<String> arguments = new LinkedList<>();
@@ -120,5 +138,71 @@ public class Launcher {
         if (null != process && process.isAlive()) {
             process.destroy();
         }
+    }
+
+    public String findChrome() {
+        String chromeExecutablePath = null;
+        if (WINDOWS) {
+            chromeExecutablePath = findChromeWinPath();
+        } else if (OSX) {
+            chromeExecutablePath  = findChromeOsxPath();
+        } else {
+            chromeExecutablePath = "google-chrome";
+        }
+        return chromeExecutablePath;
+    }
+
+    private String toString(InputStream is) {
+        try (Scanner scanner = new Scanner(is)) {
+            scanner.useDelimiter("\\A");
+            return scanner.hasNext() ? scanner.next() : "";
+        }
+    }
+
+    public String findChromeOsxPath() {
+        for (String path : getChromeOsxPaths()) {
+            final File chrome = new File(path);
+            if (chrome.exists() && chrome.canExecute()) {
+                return chrome.toString();
+            }
+        }
+        return null;
+    }
+
+    private List<String> getChromeOsxPaths() {
+        return asList(
+                "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        );
+    }
+
+    public String findChromeWinPath() {
+        try {
+            for (String path : getChromeWinPaths()) {
+                final Process process = getRuntime().exec(new String[]{
+                        "cmd", "/c", "echo", path
+                });
+                final int exitCode = process.waitFor();
+                if (exitCode == 0) {
+                    final String location = toString(process.getInputStream()).trim().replace("\"", "");
+                    final File chrome = new File(location);
+                    if (chrome.exists() && chrome.canExecute()) {
+                        return chrome.toString();
+                    }
+                }
+            }
+        } catch (Throwable ignore) {
+            // ignore
+        }
+        return null;
+    }
+
+
+    private List<String> getChromeWinPaths() {
+        return asList(
+                "%localappdata%\\Google\\Chrome SxS\\Application\\chrome.exe",
+                "%programfiles%\\Google\\Chrome\\Application\\chrome.exe",
+                "%programfiles(x86)%\\Google\\Chrome\\Application\\chrome.exe"
+        );
     }
 }

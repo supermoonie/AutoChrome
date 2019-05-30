@@ -271,7 +271,11 @@ public class AutoChrome implements
             if (null != otherArgs) {
                 args.addAll(otherArgs);
             }
-            launcher.launch(chromiumPath, args, port);
+            if (null == chromiumPath) {
+                launcher.launch(args, port);
+            } else {
+                launcher.launch(chromiumPath, args, port);
+            }
             return new AutoChrome(port, launcher);
         }
 
