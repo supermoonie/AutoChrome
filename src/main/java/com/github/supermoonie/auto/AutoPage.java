@@ -111,6 +111,16 @@ public interface AutoPage extends Auto {
     /**
      * get content
      *
+     * @return content
+     */
+    default String getContent() {
+        AutoChrome autoChrome = getThis();
+        return (String) autoChrome.eval("document.body.outerHTML");
+    }
+
+    /**
+     * get content
+     *
      * @param url url
      * @return content
      */
