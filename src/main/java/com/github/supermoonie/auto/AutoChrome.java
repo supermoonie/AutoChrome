@@ -206,6 +206,9 @@ public class AutoChrome implements
             proxies.clear();
             getBrowser().close();
             webSocketClient.closeBlocking();
+            if (null != launcher) {
+                launcher.kill();
+            }
         } catch (Exception ignore) {
             if (null != launcher) {
                 launcher.kill();
