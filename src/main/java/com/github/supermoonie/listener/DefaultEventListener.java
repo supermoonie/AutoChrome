@@ -3,7 +3,6 @@ package com.github.supermoonie.listener;
 import com.github.supermoonie.auto.AutoChrome;
 import com.github.supermoonie.event.Event;
 import com.github.supermoonie.event.page.JavascriptDialogOpening;
-import com.github.supermoonie.exception.TabCreateException;
 
 /**
  * @author supermoonie
@@ -20,8 +19,6 @@ public class DefaultEventListener implements EventListener {
     @Override
     public void onEvent(Event event, Object obj) {
         switch (event) {
-            case TargetTargetCreated:
-                throw new TabCreateException();
             case PageJavascriptDialogClosed:
                 autoChrome.setJavascriptDialogOpening(null);
                 break;

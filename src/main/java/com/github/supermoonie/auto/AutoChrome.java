@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.supermoonie.condition.Condition;
 import com.github.supermoonie.event.page.JavascriptDialogOpening;
 import com.github.supermoonie.exception.AutoChromeException;
+import com.github.supermoonie.exception.TabNotFoundException;
 import com.github.supermoonie.exception.TimeOutException;
 import com.github.supermoonie.interceptor.CommandCallBackFilter;
 import com.github.supermoonie.interceptor.CommandInterceptor;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.github.supermoonie.util.StringUtils.isAllEmpty;
 import static com.github.supermoonie.util.StringUtils.isEmpty;
 import static java.lang.System.getProperty;
 import static java.nio.file.Paths.get;
@@ -52,7 +55,7 @@ public class AutoChrome implements
 
     private static int MIN_TIMEOUT = 150;
 
-    private final Launcher launcher;
+    private Launcher launcher;
 
     private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
@@ -68,12 +71,25 @@ public class AutoChrome implements
 
     private JavascriptDialogOpening javascriptDialogOpening;
 
+    public AutoChrome(int port, String title) throws Exception {
+        TabInfo tabInfo = getTabInfo(port, title, null);
+        if (null == tabInfo) {
+            throw new TabNotFoundException(title + " not found!");
+        }
+        connect(tabInfo);
+    }
+
     private AutoChrome(int port, Launcher launcher) throws Exception {
         this.launcher = launcher;
-        TabInfo tabInfo = getTabInfo(port);
+        String currentUrl = "about:blank";
+        TabInfo tabInfo = getTabInfo(port, null, currentUrl);
         if (null == tabInfo) {
-            return;
+            throw new TabNotFoundException(currentUrl + " not found!");
         }
+        connect(tabInfo);
+    }
+
+    private void connect(TabInfo tabInfo) throws URISyntaxException, InterruptedException {
         tableId = tabInfo.getId();
         String webSocketDebuggerUrl = tabInfo.getWebSocketDebuggerUrl();
         Map<Integer, WebSocketContext> contexts = new ConcurrentHashMap<>();
@@ -104,7 +120,10 @@ public class AutoChrome implements
         return proxy;
     }
 
-    private TabInfo getTabInfo(int port) {
+    private TabInfo getTabInfo(int port, String currentTitle, String currentUrl) {
+        if (isAllEmpty(currentTitle, currentUrl)) {
+            throw new IllegalArgumentException("title and url all empty!");
+        }
         long start = System.currentTimeMillis();
         long waitTime = 5000;
         while (System.currentTimeMillis() - start <= waitTime) {
@@ -124,9 +143,12 @@ public class AutoChrome implements
                 JSONArray targetArray = JSONArray.parseArray(lines.toString());
                 for (int i = 0; i < targetArray.size(); i++) {
                     JSONObject targetJson = targetArray.getJSONObject(i);
-                    if ("page".equals(targetJson.getString("type"))
-                            && "about:blank".equals(targetJson.getString("url"))) {
-                        return targetJson.toJavaObject(TabInfo.class);
+                    if ("page".equals(targetJson.getString("type"))) {
+                        boolean exist = (!isEmpty(currentUrl) && currentUrl.equals(targetJson.getString("url")))
+                                || (!isEmpty(currentTitle) && currentTitle.equals(targetJson.getString("title")));
+                        if (exist) {
+                            return targetJson.toJavaObject(TabInfo.class);
+                        }
                     }
                 }
             } catch (IOException | InterruptedException ignore) {
@@ -134,7 +156,7 @@ public class AutoChrome implements
                 IOUtils.close(connection);
             }
         }
-        throw new AutoChromeException("could not connect to chrome!");
+        return null;
     }
 
     public boolean waitCondition(Condition condition, long timeout) {
@@ -201,13 +223,15 @@ public class AutoChrome implements
     @Override
     public void close() {
         try {
-            COUNTER.decrementAndGet();
             eventListeners.clear();
             proxies.clear();
-            getBrowser().close();
-            webSocketClient.closeBlocking();
             if (null != launcher) {
+                COUNTER.decrementAndGet();
+                getBrowser().close();
+                webSocketClient.closeBlocking();
                 launcher.kill();
+            } else {
+                getTarget().closeTarget(tableId);
             }
         } catch (Exception ignore) {
             if (null != launcher) {

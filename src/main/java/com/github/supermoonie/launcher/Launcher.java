@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getProperty;
@@ -136,7 +137,14 @@ public class Launcher {
 
     public void kill() {
         if (null != process && process.isAlive()) {
-            process.destroy();
+            try {
+                process.waitFor(2, TimeUnit.SECONDS);
+            } catch (InterruptedException ignore) {
+
+            }
+            if (process.isAlive()) {
+                process.destroy();
+            }
         }
     }
 
