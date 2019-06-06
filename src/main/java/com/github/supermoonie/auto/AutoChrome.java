@@ -71,8 +71,8 @@ public class AutoChrome implements
 
     private JavascriptDialogOpening javascriptDialogOpening;
 
-    public AutoChrome(int port, String title) throws Exception {
-        TabInfo tabInfo = getTabInfo(port, title, null);
+    public AutoChrome(int port, String title, long timeOut) throws Exception {
+        TabInfo tabInfo = getTabInfo(port, title, null, timeOut);
         if (null == tabInfo) {
             throw new TabNotFoundException(title + " not found!");
         }
@@ -82,7 +82,7 @@ public class AutoChrome implements
     private AutoChrome(int port, Launcher launcher) throws Exception {
         this.launcher = launcher;
         String currentUrl = "about:blank";
-        TabInfo tabInfo = getTabInfo(port, null, currentUrl);
+        TabInfo tabInfo = getTabInfo(port, null, currentUrl, 5_000);
         if (null == tabInfo) {
             throw new TabNotFoundException(currentUrl + " not found!");
         }
@@ -96,7 +96,7 @@ public class AutoChrome implements
         eventListeners.add(new DefaultEventListener(this));
         webSocketClient = new WebSocketClientAdapter(new URI(webSocketDebuggerUrl), contexts, eventListeners);
         webSocketClient.connectBlocking(3, TimeUnit.SECONDS);
-        invocationHandler = new CommandInterceptor(contexts, webSocketClient, 3000);
+        invocationHandler = new CommandInterceptor(contexts, webSocketClient, 60_000);
         getPage().enable();
         getPage().setLifecycleEventsEnabled(true);
         getNetwork().enable();
@@ -120,27 +120,25 @@ public class AutoChrome implements
         return proxy;
     }
 
-    private TabInfo getTabInfo(int port, String currentTitle, String currentUrl) {
+    private TabInfo getTabInfo(int port, String currentTitle, String currentUrl, long timeOut) {
         if (isAllEmpty(currentTitle, currentUrl)) {
             throw new IllegalArgumentException("title and url all empty!");
         }
         long start = System.currentTimeMillis();
-        long waitTime = 5000;
-        while (System.currentTimeMillis() - start <= waitTime) {
+        while (System.currentTimeMillis() - start <= timeOut) {
             HttpURLConnection connection = null;
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
                 URL url = new URL(String.format("http://localhost:%d/json", port));
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(1000);
-                StringBuilder lines = new StringBuilder();
-                String line;
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                    while (null != (line = reader.readLine())) {
-                        lines.append(line);
-                    }
+                List<String> lines = IOUtils.readLines(connection.getInputStream(), "UTF-8");
+                StringBuilder builder = new StringBuilder();
+                for (String line : lines) {
+                    builder.append(line);
                 }
-                JSONArray targetArray = JSONArray.parseArray(lines.toString());
+                JSONArray targetArray = JSONArray.parseArray(builder.toString());
+                System.out.println(targetArray.toJSONString());
                 for (int i = 0; i < targetArray.size(); i++) {
                     JSONObject targetJson = targetArray.getJSONObject(i);
                     if ("page".equals(targetJson.getString("type"))) {

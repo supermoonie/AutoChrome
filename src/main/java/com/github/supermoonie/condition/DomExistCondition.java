@@ -17,7 +17,7 @@ public class DomExistCondition implements Condition {
     @Override
     public Boolean apply(AutoChrome autoChrome) {
         Integer domId = autoChrome.querySelector(selector);
-        if (null != domId) {
+        if (null != domId && 0 != domId) {
             return Boolean.TRUE;
         }
         return null;
