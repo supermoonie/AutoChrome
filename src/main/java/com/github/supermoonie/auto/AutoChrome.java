@@ -138,7 +138,6 @@ public class AutoChrome implements
                     builder.append(line);
                 }
                 JSONArray targetArray = JSONArray.parseArray(builder.toString());
-                System.out.println(targetArray.toJSONString());
                 for (int i = 0; i < targetArray.size(); i++) {
                     JSONObject targetJson = targetArray.getJSONObject(i);
                     if ("page".equals(targetJson.getString("type"))) {
