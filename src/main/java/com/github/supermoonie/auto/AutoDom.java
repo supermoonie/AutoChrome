@@ -1,5 +1,7 @@
 package com.github.supermoonie.auto;
 
+import org.slf4j.Logger;
+
 import java.awt.*;
 import java.util.List;
 
@@ -17,7 +19,10 @@ public interface AutoDom extends Auto {
      * @return document id
      */
     default Integer getDocumentId() {
-        return getThis().getDom().getDocument(null, null).getNodeId();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        return autoChrome.getDom().getDocument(null, null).getNodeId();
     }
 
     /**
@@ -30,8 +35,11 @@ public interface AutoDom extends Auto {
         if (isEmpty(selector)) {
             throw new IllegalArgumentException("selector is empty!");
         }
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", selector));
         Integer documentId = getDocumentId();
-        return getThis().getDom().querySelector(documentId, selector);
+        return autoChrome.getDom().querySelector(documentId, selector);
     }
 
     /**
@@ -44,8 +52,11 @@ public interface AutoDom extends Auto {
         if (isEmpty(selector)) {
             throw new IllegalArgumentException("selector is empty!");
         }
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", selector));
         Integer documentId = getDocumentId();
-        return getThis().getDom().querySelectorAll(documentId, selector);
+        return autoChrome.getDom().querySelectorAll(documentId, selector);
     }
 
     /**
@@ -58,11 +69,14 @@ public interface AutoDom extends Auto {
         if (isEmpty(selector)) {
             throw new IllegalArgumentException("selector is empty!");
         }
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", selector));
         Integer nodeId = querySelector(selector);
         if (null == nodeId) {
             return null;
         }
-        return getThis().getDom().getOuterHTML(nodeId, null, null);
+        return autoChrome.getDom().getOuterHTML(nodeId, null, null);
     }
 
     /**
@@ -75,11 +89,14 @@ public interface AutoDom extends Auto {
         if (isEmpty(selector)) {
             throw new IllegalArgumentException("selector is empty!");
         }
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", selector));
         Integer nodeId = querySelector(selector);
         if (null == nodeId) {
             return null;
         }
-        return getThis().getDom().getContentQuads(nodeId, null, null);
+        return autoChrome.getDom().getContentQuads(nodeId, null, null);
     }
 
     /**
@@ -92,7 +109,10 @@ public interface AutoDom extends Auto {
         if (null == nodeId) {
             return null;
         }
-        List<List<Double>> contentQuads = getThis().getDom().getContentQuads(nodeId, null, null);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%d)", nodeId));
+        List<List<Double>> contentQuads = autoChrome.getDom().getContentQuads(nodeId, null, null);
         double x = contentQuads.get(0).get(0) + (contentQuads.get(0).get(2) - contentQuads.get(0).get(0)) / 2;
         double y = contentQuads.get(0).get(1) + (contentQuads.get(0).get(7) - contentQuads.get(0).get(1)) / 2;
         Point point = new Point();
@@ -114,11 +134,14 @@ public interface AutoDom extends Auto {
         if (isEmpty(name)) {
             throw new IllegalArgumentException("name is empty!");
         }
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %s)", selector, name, value));
         Integer nodeId = querySelector(selector);
         if (null == nodeId) {
             return;
         }
-        getThis().getDom().setAttributeValue(nodeId, name, value);
+        autoChrome.getDom().setAttributeValue(nodeId, name, value);
     }
 
     /**
@@ -131,10 +154,13 @@ public interface AutoDom extends Auto {
         if (isEmpty(selector)) {
             throw new IllegalArgumentException("selector is empty!");
         }
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s)", selector, outerHTML));
         Integer nodeId = querySelector(selector);
         if (null == nodeId) {
             return;
         }
-        getThis().getDom().setOuterHTML(nodeId, outerHTML);
+        autoChrome.getDom().setOuterHTML(nodeId, outerHTML);
     }
 }

@@ -3,6 +3,7 @@ package com.github.supermoonie.auto;
 import com.github.supermoonie.type.network.Cookie;
 import com.github.supermoonie.type.network.CookieParam;
 import com.github.supermoonie.type.network.GetResponseBodyResult;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,14 +22,20 @@ public interface AutoNetwork extends Auto {
      * clear browser cache
      */
     default void clearBrowserCache() {
-        getThis().getNetwork().clearBrowserCache();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        autoChrome.getNetwork().clearBrowserCache();
     }
 
     /**
      * clear browser cookies
      */
     default void clearBrowserCookies() {
-        getThis().getNetwork().clearBrowserCookies();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        autoChrome.getNetwork().clearBrowserCookies();
     }
 
     /**
@@ -41,7 +48,10 @@ public interface AutoNetwork extends Auto {
         if (isAnyEmpty(name, url)) {
             return;
         }
-        getThis().getNetwork().deleteCookies(name, url, null, null);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s)", name, url));
+        autoChrome.getNetwork().deleteCookies(name, url, null, null);
     }
 
     /**
@@ -55,7 +65,10 @@ public interface AutoNetwork extends Auto {
         if (isAnyEmpty(name, domain, path)) {
             return;
         }
-        getThis().getNetwork().deleteCookies(name, null, domain, path);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s， %s)", name, domain, path));
+        autoChrome.getNetwork().deleteCookies(name, null, domain, path);
     }
 
     /**
@@ -64,7 +77,10 @@ public interface AutoNetwork extends Auto {
      * @return cookies
      */
     default List<Cookie> getAllCookies() {
-        return getThis().getNetwork().getAllCookies();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        return autoChrome.getNetwork().getAllCookies();
     }
 
     /**
@@ -80,7 +96,10 @@ public interface AutoNetwork extends Auto {
         if (isAnyEmpty(urls)) {
             return new ArrayList<>();
         }
-        return getThis().getNetwork().getCookies(Arrays.asList(urls));
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", Arrays.toString(urls)));
+        return autoChrome.getNetwork().getCookies(Arrays.asList(urls));
     }
 
     /**
@@ -93,7 +112,10 @@ public interface AutoNetwork extends Auto {
         if (isEmpty(requestId)) {
             throw new IllegalArgumentException("request id is empty!");
         }
-        return getThis().getNetwork().getResponseBody(requestId);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", requestId));
+        return autoChrome.getNetwork().getResponseBody(requestId);
     }
 
     /**
@@ -105,8 +127,11 @@ public interface AutoNetwork extends Auto {
         if (isAllEmpty(urls)) {
             return;
         }
-        getThis().getNetwork().enable();
-        getThis().getNetwork().setBlockedURLs(Arrays.asList(urls));
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", Arrays.toString(urls)));
+        autoChrome.getNetwork().enable();
+        autoChrome.getNetwork().setBlockedURLs(Arrays.asList(urls));
     }
 
     /**
@@ -115,8 +140,11 @@ public interface AutoNetwork extends Auto {
      * @param cacheDisabled cacheDisabled
      */
     default void setCacheDisabled(boolean cacheDisabled) {
-        getThis().getNetwork().enable();
-        getThis().getNetwork().setCacheDisabled(cacheDisabled);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%b)", cacheDisabled));
+        autoChrome.getNetwork().enable();
+        autoChrome.getNetwork().setCacheDisabled(cacheDisabled);
     }
 
     /**
@@ -131,7 +159,10 @@ public interface AutoNetwork extends Auto {
         if (isAnyEmpty(name, value, url)) {
             return false;
         }
-        return getThis().getNetwork().setCookie(name, value, url, null, null, null, null, null, null);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %s)", name, value, url));
+        return autoChrome.getNetwork().setCookie(name, value, url, null, null, null, null, null, null);
     }
 
     /**
@@ -143,7 +174,10 @@ public interface AutoNetwork extends Auto {
         if (null == cookies || cookies.size() == 0) {
             return;
         }
-        getThis().getNetwork().setCookies(cookies);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", cookies.toString()));
+        autoChrome.getNetwork().setCookies(cookies);
     }
 
     /**
@@ -155,7 +189,10 @@ public interface AutoNetwork extends Auto {
         if (null == headers || headers.size() == 0) {
             return;
         }
-        getThis().getNetwork().setExtraHTTPHeaders(headers);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", headers.toString()));
+        autoChrome.getNetwork().setExtraHTTPHeaders(headers);
     }
 
     /**
@@ -167,7 +204,10 @@ public interface AutoNetwork extends Auto {
         if (isEmpty(userAgent)) {
             throw new IllegalArgumentException("userAgent is empty!");
         }
-        getThis().getNetwork().setUserAgentOverride(userAgent);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", userAgent));
+        autoChrome.getNetwork().setUserAgentOverride(userAgent);
     }
 
     /**
@@ -176,6 +216,9 @@ public interface AutoNetwork extends Auto {
      * @param ignore ignore
      */
     default void setIgnoreCertificateErrors(boolean ignore) {
-        getThis().getSecurity().setIgnoreCertificateErrors(ignore);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%b)", ignore));
+        autoChrome.getSecurity().setIgnoreCertificateErrors(ignore);
     }
 }

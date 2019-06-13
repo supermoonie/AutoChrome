@@ -8,6 +8,7 @@ import com.github.supermoonie.exception.NoDialogException;
 import com.github.supermoonie.type.dom.Rect;
 import com.github.supermoonie.type.page.*;
 import com.github.supermoonie.type.target.TargetInfo;
+import org.slf4j.Logger;
 
 import java.util.Base64;
 import java.util.List;
@@ -30,7 +31,10 @@ public interface AutoPage extends Auto {
         if (isEmpty(javaScript)) {
             return;
         }
-        getThis().getPage().addScriptToEvaluateOnNewDocument(javaScript, null);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", javaScript));
+        autoChrome.getPage().addScriptToEvaluateOnNewDocument(javaScript, null);
     }
 
     /**
@@ -44,6 +48,8 @@ public interface AutoPage extends Auto {
             throw new IllegalArgumentException("selector is empty!");
         }
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", selector));
         List<List<Double>> quads = autoChrome.getContentQuads(selector);
         List<Double> quad = quads.get(0);
         Double x = quad.get(0);
@@ -69,7 +75,10 @@ public interface AutoPage extends Auto {
         if (null == viewport) {
             return null;
         }
-        return getThis().getPage().captureScreenshot("png", 20, viewport, null);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", viewport.toString()));
+        return autoChrome.getPage().captureScreenshot("png", 20, viewport, null);
     }
 
     /**
@@ -78,7 +87,10 @@ public interface AutoPage extends Auto {
      * @return Base64-encoded image.
      */
     default String captureScreenshot() {
-        return getThis().getPage().captureScreenshot();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        return autoChrome.getPage().captureScreenshot();
     }
 
     /**
@@ -88,6 +100,8 @@ public interface AutoPage extends Auto {
      */
     default String captureFullScreenshot() {
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
         Page page = autoChrome.getPage();
         GetLayoutMetricsResult layoutMetrics = page.getLayoutMetrics();
         Rect contentSize = layoutMetrics.getContentSize();
@@ -105,7 +119,10 @@ public interface AutoPage extends Auto {
      * @return .mhtml
      */
     default String captureSnapshot() {
-        return getThis().getPage().captureSnapshot(null);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        return autoChrome.getPage().captureSnapshot(null);
     }
 
     /**
@@ -115,6 +132,8 @@ public interface AutoPage extends Auto {
      */
     default String getContent() {
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
         return (String) autoChrome.eval("document.body.outerHTML");
     }
 
@@ -129,6 +148,8 @@ public interface AutoPage extends Auto {
             return null;
         }
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", url));
         String frameId = getFrameId(url);
         if (null == frameId) {
             return null;
@@ -149,6 +170,8 @@ public interface AutoPage extends Auto {
      */
     default void handleJavaScriptDialog(boolean accept, String promptText) {
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%b, %s)", accept, promptText));
         for (int i = 0; ; i++) {
             if (i >= 20) {
                 throw new NoDialogException();
@@ -176,7 +199,10 @@ public interface AutoPage extends Auto {
         if (isEmpty(url)) {
             throw new IllegalArgumentException("url is empty!");
         }
-        NavigateResult navigateResult = getThis().getPage().navigate(url);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", url));
+        NavigateResult navigateResult = autoChrome.getPage().navigate(url);
         if (null == navigateResult) {
             throw new NavigateFailedException("could not load " + url);
         }
@@ -199,7 +225,10 @@ public interface AutoPage extends Auto {
         if (isEmpty(url)) {
             throw new IllegalArgumentException("url is empty!");
         }
-        NavigateResult navigateResult = getThis().getPage().navigate(url, referrer, transitionType, frameId);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %s, %s)", url, referrer, transitionType.toString(), frameId));
+        NavigateResult navigateResult = autoChrome.getPage().navigate(url, referrer, transitionType, frameId);
         if (null == navigateResult) {
             throw new NavigateFailedException("could not load " + url);
         }
@@ -213,7 +242,10 @@ public interface AutoPage extends Auto {
      * back
      */
     default void back() {
-        Page page = getThis().getPage();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        Page page = autoChrome.getPage();
         GetNavigationHistoryResult history = page.getNavigationHistory();
         int index = history.getCurrentIndex() - 1;
         if (index < 0 || index >= history.getEntries().size()) {
@@ -229,7 +261,10 @@ public interface AutoPage extends Auto {
      * forward
      */
     default void forward() {
-        Page page = getThis().getPage();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        Page page = autoChrome.getPage();
         GetNavigationHistoryResult history = page.getNavigationHistory();
         int index = history.getCurrentIndex() + 1;
         if (index >= history.getEntries().size()) {
@@ -248,13 +283,19 @@ public interface AutoPage extends Auto {
      * @param scriptToEvaluateOnLoad script to evaluate on load
      */
     default void reload(Boolean ignoreCache, String scriptToEvaluateOnLoad) {
-        getThis().getPage().reload(ignoreCache, scriptToEvaluateOnLoad);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%b, %s)", ignoreCache, scriptToEvaluateOnLoad));
+        autoChrome.getPage().reload(ignoreCache, scriptToEvaluateOnLoad);
     }
 
     /**
      * stop loading
      */
     default void stopLoading() {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
         getThis().getPage().stopLoading();
     }
 
@@ -268,6 +309,8 @@ public interface AutoPage extends Auto {
             return;
         }
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", html));
         TargetInfo targetInfo = autoChrome.getTarget().getTargetInfo(autoChrome.getTableId());
         String currentUrl = targetInfo.getUrl();
         String frameId = getFrameId(currentUrl);
@@ -281,7 +324,10 @@ public interface AutoPage extends Auto {
      * @param downloadPath path
      */
     default void setDownloadBehavior(DownLoadBehaviorType type, String downloadPath) {
-        getThis().getPage().setDownloadBehavior(type.toString(), downloadPath);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s)", type.toString(), downloadPath));
+        autoChrome.getPage().setDownloadBehavior(type.toString(), downloadPath);
     }
 
     /**
@@ -294,7 +340,10 @@ public interface AutoPage extends Auto {
         if (isEmpty(url)) {
             return null;
         }
-        FrameResourceTree resourceTree = getThis().getPage().getResourceTree();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", url));
+        FrameResourceTree resourceTree = autoChrome.getPage().getResourceTree();
         String frameId = null;
         Stack<FrameResourceTree> stack = new Stack<>();
         stack.push(resourceTree);

@@ -21,11 +21,11 @@ import com.github.supermoonie.ws.WebSocketContext;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,7 +53,9 @@ import static java.nio.file.Paths.get;
 public class AutoChrome implements
         Closeable, AutoWindow, AutoDom, Domain, AutoInput, AutoNetwork, AutoPage, AutoNavigate, AutoRuntime, Auto {
 
-    private static int MIN_TIMEOUT = 150;
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static final int MIN_TIMEOUT = 150;
 
     private Launcher launcher;
 
@@ -156,16 +158,13 @@ public class AutoChrome implements
         return null;
     }
 
-    public boolean waitCondition(Condition condition, long timeout) {
-        return waitConditions(Collections.singletonList(condition), timeout);
+    public boolean waitCondition(Condition condition) {
+        return waitCondition(condition, 20_000);
     }
 
-    public boolean waitConditions(List<Condition> conditions, long timeout) {
-        if (null == conditions) {
+    public boolean waitCondition(Condition condition, long timeout) {
+        if (null == condition) {
             throw new NullPointerException("conditions is null!");
-        }
-        if (conditions.size() == 0) {
-            throw new IllegalArgumentException("conditions's size is zero!");
         }
         if (timeout < MIN_TIMEOUT) {
             throw new IllegalArgumentException("timeout must greater than 150 ms!");
@@ -177,11 +176,9 @@ public class AutoChrome implements
             } catch (InterruptedException e) {
                 throw new AutoChromeException(e);
             }
-            for (Condition condition : conditions) {
-                Boolean result = condition.apply(this);
-                if (null != result) {
-                    return result;
-                }
+            Boolean result = condition.apply(this);
+            if (null != result) {
+                return result;
             }
             if (System.currentTimeMillis() - start >= timeout) {
                 throw new TimeOutException("time out in " + timeout + " ms");
@@ -252,6 +249,10 @@ public class AutoChrome implements
 
     public void setJavascriptDialogOpening(JavascriptDialogOpening javascriptDialogOpening) {
         this.javascriptDialogOpening = javascriptDialogOpening;
+    }
+
+    Logger getLogger() {
+        return logger;
     }
 
     public static class Builder {

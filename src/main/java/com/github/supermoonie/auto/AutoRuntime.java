@@ -12,9 +12,8 @@ import com.github.supermoonie.todo.Todo;
 import com.github.supermoonie.type.network.GetResponseBodyResult;
 import com.github.supermoonie.type.runtime.EvaluateResult;
 import com.github.supermoonie.type.runtime.RemoteObject;
+import org.slf4j.Logger;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.supermoonie.util.StringUtils.isEmpty;
@@ -34,7 +33,7 @@ public interface AutoRuntime extends Auto {
      * @return result
      */
     default boolean evalUntilDialogOrCheckOk(String expression, String expectTrueExp, long timeout) {
-        List<Condition> conditions = Collections.singletonList(autoChrome -> {
+        Condition condition = autoChrome -> {
             if (null != autoChrome.getJavascriptDialogOpening()) {
                 return Boolean.FALSE;
             }
@@ -43,8 +42,8 @@ public interface AutoRuntime extends Auto {
                 return Boolean.TRUE;
             }
             return null;
-        });
-        return evalUntil(expression, conditions, timeout);
+        };
+        return evalUntil(expression, condition, timeout);
     }
 
     /**
@@ -57,8 +56,7 @@ public interface AutoRuntime extends Auto {
      * @return If check success return true, else return false.
      */
     default boolean evalUntilCheckFinished(String expression, String expectTrueExp, String expectFalseExp, long timeout) {
-        List<Condition> conditions = Collections.singletonList(new ExpressionsCondition(expectTrueExp, expectFalseExp));
-        return evalUntil(expression, conditions, timeout);
+        return evalUntil(expression, new ExpressionsCondition(expectTrueExp, expectFalseExp), timeout);
     }
 
     /**
@@ -88,14 +86,16 @@ public interface AutoRuntime extends Auto {
      * eval until
      *
      * @param expression expression
-     * @param conditions conditions
+     * @param condition  condition
      * @param timeout    timeout
      * @return result
      */
-    default boolean evalUntil(String expression, List<Condition> conditions, long timeout) {
+    default boolean evalUntil(String expression, Condition condition, long timeout) {
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %d)", expression, condition, timeout));
         autoChrome.evaluate(expression);
-        return autoChrome.waitConditions(conditions, timeout);
+        return autoChrome.waitCondition(condition, timeout);
     }
 
     /**

@@ -6,6 +6,7 @@ import com.github.supermoonie.type.input.KeyEventType;
 import com.github.supermoonie.type.input.Modifier;
 import com.github.supermoonie.type.input.MouseButtonType;
 import com.github.supermoonie.type.input.MouseEventType;
+import org.slf4j.Logger;
 
 import java.awt.*;
 import java.util.List;
@@ -36,7 +37,10 @@ public interface AutoInput extends Auto {
         if (null == text) {
             throw new NullPointerException("text is null !");
         }
-        Input input = getThis().getInput();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", text));
+        Input input = autoChrome.getInput();
         for (int i = 0; i < text.length(); i++) {
             String c = text.substring(i, i + 1);
             input.dispatchKeyEvent(KeyEventType.keyDown, null, null, c,
@@ -57,10 +61,13 @@ public interface AutoInput extends Auto {
         if (isEmpty(selector)) {
             throw new IllegalArgumentException("selector is empty !");
         }
-        List<List<Double>> contentQuads = getThis().getContentQuads(selector);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", selector));
+        List<List<Double>> contentQuads = autoChrome.getContentQuads(selector);
         double x = contentQuads.get(0).get(0) + (contentQuads.get(0).get(2) - contentQuads.get(0).get(0)) / 2;
         double y = contentQuads.get(0).get(1) + (contentQuads.get(0).get(7) - contentQuads.get(0).get(1)) / 2;
-        Input input = getThis().getInput();
+        Input input = autoChrome.getInput();
         input.dispatchMouseEvent(MouseEventType.mousePressed, x, y, null, null,
                 MouseButtonType.left, 1, null, null);
         input.dispatchMouseEvent(MouseEventType.mouseReleased, x, y, null, null,
@@ -73,6 +80,9 @@ public interface AutoInput extends Auto {
      * @param point point
      */
     default void click(Point point) {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", point.toString()));
         click(point.getX(), point.getY());
     }
 
@@ -86,7 +96,10 @@ public interface AutoInput extends Auto {
         if (x < 0 || y < 0) {
             throw new IllegalArgumentException("x or y less than zero !");
         }
-        Input input = getThis().getInput();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%.2f, %.2f)", x, y));
+        Input input = autoChrome.getInput();
         input.dispatchMouseEvent(MouseEventType.mousePressed, x, y, null, null,
                 MouseButtonType.left, 1, null, null);
         input.dispatchMouseEvent(MouseEventType.mouseReleased, x, y, null, null,
@@ -104,7 +117,10 @@ public interface AutoInput extends Auto {
      * @param interval interval
      */
     default void move(double fromX, double fromY, double toX, double toY, int steps, long interval) {
-        Input input = getThis().getInput();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%.2f, %.2f, %.2f, %.2f, %d, %d)", fromX, fromY, toX, toY, steps, interval));
+        Input input = autoChrome.getInput();
         for (double i = 0.0; i < steps; i++) {
             try {
                 Thread.sleep(interval);
@@ -125,6 +141,8 @@ public interface AutoInput extends Auto {
      */
     default void drag(String sliderButtonSelector, String sliderBoxSelector, int steps, int sigma, int interval, int wait) {
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %d, %d, %d, %d)", sliderButtonSelector, sliderBoxSelector, steps, sigma, interval, wait));
         List<List<Double>> sliderBoxQuads = autoChrome.getContentQuads(sliderBoxSelector);
         Double width = sliderBoxQuads.get(0).get(2) - sliderBoxQuads.get(0).get(0);
         List<List<Double>> sliderButtonQuads = autoChrome.getContentQuads(sliderButtonSelector);
@@ -164,7 +182,10 @@ public interface AutoInput extends Auto {
         if (clickCount < 1) {
             throw new IllegalArgumentException("clickCount less than 1 !");
         }
-        Input input = getThis().getInput();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%.2f, %.2f, %s, %d)", x, y, modifier.toString(), clickCount));
+        Input input = autoChrome.getInput();
         input.dispatchMouseEvent(MouseEventType.mousePressed, x, y, modifier.value(), null, MouseButtonType.left, clickCount, null, null);
     }
 
@@ -204,7 +225,10 @@ public interface AutoInput extends Auto {
         if (clickCount < 1) {
             throw new IllegalArgumentException("clickCount less than 1 !");
         }
-        Input input = getThis().getInput();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%.2f, %.2f, %s, %d)", x, y, modifier.toString(), clickCount));
+        Input input = autoChrome.getInput();
         input.dispatchMouseEvent(MouseEventType.mouseReleased, x, y, modifier.value(), null, MouseButtonType.left, clickCount, null, null);
     }
 
@@ -234,7 +258,10 @@ public interface AutoInput extends Auto {
      * send Tab
      */
     default void sendTab() {
-        Input input = getThis().getInput();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(": Tab");
+        Input input = autoChrome.getInput();
         input.dispatchKeyEvent(KeyEventType.keyDown, null, null, null,
                 null, null, null, "Tab", TAB,
                 TAB, null, null, null, null);
@@ -247,7 +274,10 @@ public interface AutoInput extends Auto {
      * send Enter
      */
     default void sendEnter() {
-        Input input = getThis().getInput();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(": Enter");
+        Input input = autoChrome.getInput();
         input.dispatchKeyEvent(KeyEventType.keyDown, null, null, "\r",
                 null, null, null, "Enter", ENTER,
                 ENTER, null, null, null, null);
@@ -260,6 +290,9 @@ public interface AutoInput extends Auto {
      * send backspace
      */
     default void sendBackspace() {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(": Backspace");
         sendKeyCode(BACKSPACE);
     }
 
@@ -267,6 +300,9 @@ public interface AutoInput extends Auto {
      * send Esc
      */
     default void sendEsc() {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(": Esc");
         sendKeyCode(ESC);
     }
 
@@ -274,6 +310,9 @@ public interface AutoInput extends Auto {
      * send left arrow
      */
     default void sendLeftArrow() {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(": LeftArrow");
         sendKeyCode(LEFT_ARROW);
     }
 
@@ -281,6 +320,9 @@ public interface AutoInput extends Auto {
      * send up arrow
      */
     default void sendUpArrow() {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(": UpArrow");
         sendKeyCode(UP_ARROW);
     }
 
@@ -288,6 +330,9 @@ public interface AutoInput extends Auto {
      * send right arrow
      */
     default void sendRightArrow() {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(": RightArrow");
         sendKeyCode(RIGHT_ARROW);
     }
 
@@ -295,6 +340,9 @@ public interface AutoInput extends Auto {
      * send down arrow
      */
     default void sendDownArrow() {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(": DownArrow");
         sendKeyCode(DOWN_ARROW);
     }
 

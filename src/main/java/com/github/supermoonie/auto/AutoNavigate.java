@@ -10,6 +10,7 @@ import com.github.supermoonie.listener.DefaultNetworkListener;
 import com.github.supermoonie.todo.Todo;
 import com.github.supermoonie.type.page.LifecycleEventType;
 import com.github.supermoonie.type.page.NavigateResult;
+import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
@@ -23,15 +24,37 @@ public interface AutoNavigate extends Auto {
     /**
      * navigate and then wait document ready
      *
+     * @param url url
+     * @return NavigateResult
+     */
+    default NavigateResult navigateUntilDomReady(String url) {
+        return navigateUntilDomReady(url, 20_000);
+    }
+
+    /**
+     * navigate and then wait document ready
+     *
      * @param url     url
      * @param timeout timeout
      * @return NavigateResult
      */
     default NavigateResult navigateUntilDomReady(String url, long timeout) {
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %d)", url, timeout));
         NavigateResult navigateResult = autoChrome.navigate(url);
-        autoChrome.waitConditions(Collections.singletonList(Conditions.documentReady), timeout);
+        autoChrome.waitCondition(Conditions.documentReady, timeout);
         return navigateResult;
+    }
+
+    /**
+     * navigate until dialog open
+     *
+     * @param url url
+     * @return NavigateResult
+     */
+    default NavigateResult navigateUntilDialogOpen(String url) {
+        return navigateUntilDialogOpen(url, 20_000);
     }
 
     /**
@@ -43,9 +66,21 @@ public interface AutoNavigate extends Auto {
      */
     default NavigateResult navigateUntilDialogOpen(String url, long timeout) {
         AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s, %d)", url, timeout));
         NavigateResult navigateResult = autoChrome.navigate(url);
-        autoChrome.waitConditions(Collections.singletonList(Conditions.hasDialog), timeout);
+        autoChrome.waitCondition(Conditions.hasDialog, timeout);
         return navigateResult;
+    }
+
+    /**
+     * navigate until <code>firstMeaningFulPaint</code> event fired
+     *
+     * @param url url
+     * @return NavigateResult
+     */
+    default NavigateResult navigateUntilFirstMeaningfulPaint(String url) {
+        return navigateUntilLifecycleEvent(url, LifecycleEventType.firstMeaningfulPaint);
     }
 
     /**
@@ -64,6 +99,17 @@ public interface AutoNavigate extends Auto {
      *
      * @param url       url
      * @param eventType lifecycle event type
+     * @return NavigateResult
+     */
+    default NavigateResult navigateUntilLifecycleEvent(String url, LifecycleEventType eventType) {
+        return navigateUntilLifecycleEvent(url, eventType, 20_000);
+    }
+
+    /**
+     * navigate until lifecycle event fired
+     *
+     * @param url       url
+     * @param eventType lifecycle event type
      * @param timeout   timeout
      * @return NavigateResult
      */
@@ -71,9 +117,24 @@ public interface AutoNavigate extends Auto {
         if (null == eventType) {
             throw new NullPointerException("eventType is null!");
         }
+        AutoChrome chrome = getThis();
+        Logger logger = chrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %d)", url, eventType.toString(), timeout));
         Todo<NavigateResult> todo = autoChrome -> autoChrome.navigate(url);
         DefaultLifecycleEventListener listener = new DefaultLifecycleEventListener(eventType);
-        return getThis().waitEvent(todo, listener, timeout);
+        return chrome.waitEvent(todo, listener, timeout);
+    }
+
+    /**
+     * navigate until event fired
+     *
+     * @param url             url
+     * @param event           event
+     * @param resultReference result reference
+     * @return NavigateResult
+     */
+    default NavigateResult navigateUntil(String url, Event event, AtomicReference<Object> resultReference) {
+        return navigateUntil(url, event, 20_000, resultReference);
     }
 
     /**
@@ -89,9 +150,23 @@ public interface AutoNavigate extends Auto {
         if (null == event) {
             throw new NullPointerException("event is null!");
         }
+        AutoChrome chrome = getThis();
+        Logger logger = chrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %d)", url, event.toString(), timeout));
         Todo<NavigateResult> todo = autoChrome -> autoChrome.navigate(url);
         AbstractEventListener listener = new BaseEventListener(event, resultReference);
-        return getThis().waitEvent(todo, listener, timeout);
+        return chrome.waitEvent(todo, listener, timeout);
+    }
+
+    /**
+     * load until network loading finished
+     *
+     * @param url      url
+     * @param matchUrl matchUrl
+     * @return requestId
+     */
+    default String navigateUntilNetworkLoadingFinished(String url, String matchUrl) {
+        return navigateUntilNetworkLoadingFinished(url, matchUrl, 20_000);
     }
 
     /**
@@ -102,11 +177,24 @@ public interface AutoNavigate extends Auto {
      * @param timeout  timeout
      * @return requestId
      */
-    default String navigateUntilNetworkLoadingFinished(final String url, final String matchUrl, long timeout) {
+    default String navigateUntilNetworkLoadingFinished(String url, String matchUrl, long timeout) {
+        AutoChrome chrome = getThis();
+        Logger logger = chrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %d)", url, matchUrl, timeout));
         Todo<NavigateResult> todo = autoChrome -> autoChrome.navigate(url);
         DefaultNetworkListener listener = new DefaultNetworkListener(matchUrl);
-        getThis().waitEvent(todo, listener, timeout);
+        chrome.waitEvent(todo, listener, timeout);
         return listener.getRequestId();
+    }
+
+    /**
+     * load until database added
+     *
+     * @param url url
+     * @return AutoChrome
+     */
+    default AddDatabase navigateUntilDatabaseAdded(String url) {
+        return navigateUntilDatabaseAdded(url, 20_000);
     }
 
     /**
