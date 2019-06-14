@@ -12,7 +12,7 @@ import com.github.supermoonie.interceptor.CommandInterceptor;
 import com.github.supermoonie.interceptor.DefaultCommandInterceptor;
 import com.github.supermoonie.launcher.Launcher;
 import com.github.supermoonie.listener.AbstractEventListener;
-import com.github.supermoonie.listener.DefaultEventListener;
+import com.github.supermoonie.listener.DialogEventListener;
 import com.github.supermoonie.listener.EventListener;
 import com.github.supermoonie.todo.Todo;
 import com.github.supermoonie.type.TabInfo;
@@ -32,7 +32,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,7 +94,7 @@ public class AutoChrome implements
         tableId = tabInfo.getId();
         String webSocketDebuggerUrl = tabInfo.getWebSocketDebuggerUrl();
         Map<Integer, WebSocketContext> contexts = new ConcurrentHashMap<>();
-        eventListeners.add(new DefaultEventListener(this));
+        eventListeners.add(new DialogEventListener(this));
         webSocketClient = new WebSocketClientAdapter(new URI(webSocketDebuggerUrl), contexts, eventListeners);
         webSocketClient.connectBlocking(3, TimeUnit.SECONDS);
         invocationHandler = new CommandInterceptor(contexts, webSocketClient, 60_000);
@@ -159,7 +158,7 @@ public class AutoChrome implements
     }
 
     public boolean waitCondition(Condition condition) {
-        return waitCondition(condition, 20_000);
+        return waitCondition(condition, DEFAULT_TIMEOUT);
     }
 
     public boolean waitCondition(Condition condition, long timeout) {

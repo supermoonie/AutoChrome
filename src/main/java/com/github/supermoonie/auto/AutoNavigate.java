@@ -28,7 +28,7 @@ public interface AutoNavigate extends Auto {
      * @return NavigateResult
      */
     default NavigateResult navigateUntilDomReady(String url) {
-        return navigateUntilDomReady(url, 20_000);
+        return navigateUntilDomReady(url, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -54,7 +54,7 @@ public interface AutoNavigate extends Auto {
      * @return NavigateResult
      */
     default NavigateResult navigateUntilDialogOpen(String url) {
-        return navigateUntilDialogOpen(url, 20_000);
+        return navigateUntilDialogOpen(url, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -102,7 +102,7 @@ public interface AutoNavigate extends Auto {
      * @return NavigateResult
      */
     default NavigateResult navigateUntilLifecycleEvent(String url, LifecycleEventType eventType) {
-        return navigateUntilLifecycleEvent(url, eventType, 20_000);
+        return navigateUntilLifecycleEvent(url, eventType, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -134,7 +134,7 @@ public interface AutoNavigate extends Auto {
      * @return NavigateResult
      */
     default NavigateResult navigateUntil(String url, Event event, AtomicReference<Object> resultReference) {
-        return navigateUntil(url, event, 20_000, resultReference);
+        return navigateUntil(url, event, DEFAULT_TIMEOUT, resultReference);
     }
 
     /**
@@ -166,7 +166,7 @@ public interface AutoNavigate extends Auto {
      * @return requestId
      */
     default String navigateUntilNetworkLoadingFinished(String url, String matchUrl) {
-        return navigateUntilNetworkLoadingFinished(url, matchUrl, 20_000);
+        return navigateUntilNetworkLoadingFinished(url, matchUrl, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -194,7 +194,7 @@ public interface AutoNavigate extends Auto {
      * @return AutoChrome
      */
     default AddDatabase navigateUntilDatabaseAdded(String url) {
-        return navigateUntilDatabaseAdded(url, 20_000);
+        return navigateUntilDatabaseAdded(url, DEFAULT_TIMEOUT);
     }
 
     /**

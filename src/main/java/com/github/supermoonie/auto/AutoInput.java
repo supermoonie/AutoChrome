@@ -64,14 +64,8 @@ public interface AutoInput extends Auto {
         AutoChrome autoChrome = getThis();
         Logger logger = autoChrome.getLogger();
         logger.debug(String.format(": (%s)", selector));
-        List<List<Double>> contentQuads = autoChrome.getContentQuads(selector);
-        double x = contentQuads.get(0).get(0) + (contentQuads.get(0).get(2) - contentQuads.get(0).get(0)) / 2;
-        double y = contentQuads.get(0).get(1) + (contentQuads.get(0).get(7) - contentQuads.get(0).get(1)) / 2;
-        Input input = autoChrome.getInput();
-        input.dispatchMouseEvent(MouseEventType.mousePressed, x, y, null, null,
-                MouseButtonType.left, 1, null, null);
-        input.dispatchMouseEvent(MouseEventType.mouseReleased, x, y, null, null,
-                MouseButtonType.left, 1, null, null);
+        Point point = autoChrome.getPoint(autoChrome.querySelector(selector));
+        click(point);
     }
 
     /**
@@ -145,9 +139,9 @@ public interface AutoInput extends Auto {
         logger.debug(String.format(": (%s, %s, %d, %d, %d, %d)", sliderButtonSelector, sliderBoxSelector, steps, sigma, interval, wait));
         List<List<Double>> sliderBoxQuads = autoChrome.getContentQuads(sliderBoxSelector);
         Double width = sliderBoxQuads.get(0).get(2) - sliderBoxQuads.get(0).get(0);
-        List<List<Double>> sliderButtonQuads = autoChrome.getContentQuads(sliderButtonSelector);
-        Double x = sliderButtonQuads.get(0).get(0) + (sliderButtonQuads.get(0).get(2) - sliderButtonQuads.get(0).get(0)) / 2;
-        Double y = sliderButtonQuads.get(0).get(1) + (sliderButtonQuads.get(0).get(7) - sliderButtonQuads.get(0).get(1)) / 2;
+        Point point = autoChrome.getPoint(autoChrome.querySelector(sliderButtonSelector));
+        double x = point.getX();
+        double y = point.getY();
         Input input = autoChrome.getInput();
         double stepWidth = (width + sigma) / steps;
         input.dispatchMouseEvent(MouseEventType.mousePressed, x, y, null, null, MouseButtonType.left, null, null, null);
@@ -197,6 +191,9 @@ public interface AutoInput extends Auto {
      * @param clickCount click count
      */
     default void down(double x, double y, int clickCount) {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%.2f, %.2f, %d)", x, y, clickCount));
         down(x, y, Modifier.Default, clickCount);
     }
 
@@ -207,6 +204,9 @@ public interface AutoInput extends Auto {
      * @param y y
      */
     default void down(double x, double y) {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%.2f, %.2f)", x, y));
         down(x, y, 1);
     }
 
@@ -240,6 +240,9 @@ public interface AutoInput extends Auto {
      * @param clickCount click count
      */
     default void up(double x, double y, int clickCount) {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%.2f, %.2f, %d)", x, y, clickCount));
         up(x, y, Modifier.Default, clickCount);
     }
 
@@ -250,6 +253,9 @@ public interface AutoInput extends Auto {
      * @param y y
      */
     default void up(double x, double y) {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%.2f, %.2f)", x, y));
         up(x, y, 1);
     }
 

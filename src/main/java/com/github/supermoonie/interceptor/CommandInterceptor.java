@@ -80,9 +80,7 @@ public class CommandInterceptor implements MethodInterceptor {
         }
         json.put("params", params);
         String message = json.toJSONString();
-        if (logger.isDebugEnabled()) {
-            logger.debug("send: " + message);
-        }
+        logger.debug("send: " + message);
         WebSocketContext context = new WebSocketContext();
         contexts.put(id, context);
         webSocketClient.send(message);

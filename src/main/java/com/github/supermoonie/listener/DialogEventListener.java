@@ -8,11 +8,11 @@ import com.github.supermoonie.event.page.JavascriptDialogOpening;
  * @author supermoonie
  * @date 2018/11/29
  */
-public class DefaultEventListener implements EventListener {
+public class DialogEventListener implements EventListener {
 
     private final AutoChrome autoChrome;
 
-    public DefaultEventListener(AutoChrome autoChrome) {
+    public DialogEventListener(AutoChrome autoChrome) {
         this.autoChrome = autoChrome;
     }
 

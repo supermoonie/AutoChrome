@@ -6,6 +6,8 @@ package com.github.supermoonie.auto;
  */
 public interface Auto {
 
+    int DEFAULT_TIMEOUT = 20_000;
+
     /**
      * get AutoChrome
      *

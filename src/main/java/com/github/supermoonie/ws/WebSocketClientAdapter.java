@@ -58,9 +58,7 @@ public class WebSocketClientAdapter extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("receive: " + message);
-        }
+        logger.debug("receive: " + message);
         JSONObject json = JSONObject.parseObject(message);
         if (json.containsKey(ID_KEY)) {
             Integer id = json.getInteger(ID_KEY);

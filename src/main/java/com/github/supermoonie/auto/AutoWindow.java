@@ -3,6 +3,7 @@ package com.github.supermoonie.auto;
 import com.github.supermoonie.type.browser.Bounds;
 import com.github.supermoonie.type.browser.GetWindowForTargetResult;
 import com.github.supermoonie.type.browser.WindowState;
+import org.slf4j.Logger;
 
 /**
  * @author supermoonie
@@ -16,7 +17,10 @@ public interface AutoWindow extends Auto {
      * @return Bounds
      */
     default Bounds getWindowBounds() {
-        String tableId = getThis().getTableId();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(":");
+        String tableId = autoChrome.getTableId();
         GetWindowForTargetResult windowForTarget = getThis().getBrowser().getWindowForTarget(tableId);
         return windowForTarget.getBounds();
     }
@@ -31,7 +35,10 @@ public interface AutoWindow extends Auto {
         if (null == bounds) {
             throw new NullPointerException("bounds is null!");
         }
-        String tableId = getThis().getTableId();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", bounds.toString()));
+        String tableId = autoChrome.getTableId();
         GetWindowForTargetResult windowForTarget = getThis().getBrowser().getWindowForTarget(tableId);
         getThis().getBrowser().setWindowBounds(windowForTarget.getWindowId(), bounds);
         return getThis();
@@ -47,6 +54,9 @@ public interface AutoWindow extends Auto {
      * @return AutoChrome
      */
     default AutoChrome setWindowBounds(Integer left, Integer top, Integer width, Integer height) {
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%d, %d, %d, %d)", left, top, width, height));
         Bounds bounds = new Bounds();
         bounds.setLeft(left);
         bounds.setTop(top);
@@ -65,6 +75,9 @@ public interface AutoWindow extends Auto {
         if (null == windowState) {
             throw new NullPointerException("windowState is null!");
         }
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", windowState.toString()));
         Bounds bounds = new Bounds();
         bounds.setWindowState(windowState);
         return setWindowBounds(bounds);

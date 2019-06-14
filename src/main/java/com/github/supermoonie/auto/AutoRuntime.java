@@ -29,6 +29,17 @@ public interface AutoRuntime extends Auto {
      *
      * @param expression    expression
      * @param expectTrueExp expression which expect true
+     * @return result
+     */
+    default boolean evalUntilDialogOrCheckOk(String expression, String expectTrueExp) {
+        return evalUntilDialogOrCheckOk(expression, expectTrueExp, DEFAULT_TIMEOUT);
+    }
+
+    /**
+     * eval until dialog or expression check ok
+     *
+     * @param expression    expression
+     * @param expectTrueExp expression which expect true
      * @param timeout       timeout
      * @return result
      */
@@ -52,11 +63,34 @@ public interface AutoRuntime extends Auto {
      * @param expression     expression
      * @param expectTrueExp  expression to check success
      * @param expectFalseExp expression to check fail
+     * @return If check success return true, else return false.
+     */
+    default boolean evalUntilCheckFinished(String expression, String expectTrueExp, String expectFalseExp) {
+        return evalUntilCheckFinished(expression, expectTrueExp, expectFalseExp, DEFAULT_TIMEOUT);
+    }
+
+    /**
+     * eval until expression check finished
+     *
+     * @param expression     expression
+     * @param expectTrueExp  expression to check success
+     * @param expectFalseExp expression to check fail
      * @param timeout        timeout
      * @return If check success return true, else return false.
      */
     default boolean evalUntilCheckFinished(String expression, String expectTrueExp, String expectFalseExp, long timeout) {
         return evalUntil(expression, new ExpressionsCondition(expectTrueExp, expectFalseExp), timeout);
+    }
+
+    /**
+     * eval expression until match url data received
+     *
+     * @param expression expression
+     * @param matchUrl   match url
+     * @return body
+     */
+    default GetResponseBodyResult evalUntilDataReceived(String expression, String matchUrl) {
+        return evalUntilDataReceived(expression, matchUrl, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -87,6 +121,17 @@ public interface AutoRuntime extends Auto {
      *
      * @param expression expression
      * @param condition  condition
+     * @return result
+     */
+    default boolean evalUntil(String expression, Condition condition) {
+        return evalUntil(expression, condition, DEFAULT_TIMEOUT);
+    }
+
+    /**
+     * eval until
+     *
+     * @param expression expression
+     * @param condition  condition
      * @param timeout    timeout
      * @return result
      */
@@ -103,6 +148,18 @@ public interface AutoRuntime extends Auto {
      *
      * @param expression      expression
      * @param event           event
+     * @param resultReference result referenc
+     * @return EvaluateResult
+     */
+    default EvaluateResult evalUntil(String expression, Event event, AtomicReference<Object> resultReference) {
+        return evalUntil(expression, event, DEFAULT_TIMEOUT, resultReference);
+    }
+
+    /**
+     * eval until
+     *
+     * @param expression      expression
+     * @param event           event
      * @param timeout         timeout
      * @param resultReference result referenc
      * @return EvaluateResult
@@ -111,6 +168,9 @@ public interface AutoRuntime extends Auto {
         if (null == event) {
             throw new NullPointerException("event is null!");
         }
+        AutoChrome chrome = getThis();
+        Logger logger = chrome.getLogger();
+        logger.debug(String.format(": (%s, %s, %d, %s)", expression, event.toString(), timeout, resultReference.toString()));
         Todo<EvaluateResult> todo = autoChrome -> autoChrome.evaluate(expression);
         AbstractEventListener listener = new BaseEventListener(event, resultReference);
         return getThis().waitEvent(todo, listener, timeout);
@@ -126,7 +186,10 @@ public interface AutoRuntime extends Auto {
         if (isEmpty(expression)) {
             throw new IllegalArgumentException("expression is empty!");
         }
-        Runtime runtime = getThis().getRuntime();
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", expression));
+        Runtime runtime = autoChrome.getRuntime();
         EvaluateResult evaluateResult = runtime.evaluate(expression);
         if (null == evaluateResult) {
             return null;
@@ -155,7 +218,10 @@ public interface AutoRuntime extends Auto {
         if (isEmpty(expression)) {
             throw new IllegalArgumentException("expression is empty!");
         }
-        EvaluateResult evaluateResult = getThis().getRuntime().evaluate(expression);
+        AutoChrome autoChrome = getThis();
+        Logger logger = autoChrome.getLogger();
+        logger.debug(String.format(": (%s)", expression));
+        EvaluateResult evaluateResult = autoChrome.getRuntime().evaluate(expression);
         if (null == evaluateResult) {
             return null;
         }
