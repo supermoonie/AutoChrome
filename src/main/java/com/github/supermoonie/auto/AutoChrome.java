@@ -97,7 +97,7 @@ public class AutoChrome implements
         eventListeners.add(new DialogEventListener(this));
         webSocketClient = new WebSocketClientAdapter(new URI(webSocketDebuggerUrl), contexts, eventListeners);
         webSocketClient.connectBlocking(3, TimeUnit.SECONDS);
-        invocationHandler = new CommandInterceptor(contexts, webSocketClient, 60_000);
+        invocationHandler = new CommandInterceptor(contexts, webSocketClient, 6_000);
         getPage().enable();
         getPage().setLifecycleEventsEnabled(true);
         getNetwork().enable();
