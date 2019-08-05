@@ -6,7 +6,7 @@ import com.github.supermoonie.auto.AutoChrome;
  * @author wangchao
  * @date 2018/12/1 10:30
  */
-public interface Todo<T> {
+public interface EventHandler<T> {
 
     /**
      * do it
@@ -14,5 +14,5 @@ public interface Todo<T> {
      * @param autoChrome auto chrome
      * @return t
      */
-    T doIt(AutoChrome autoChrome);
+    T handle(AutoChrome autoChrome);
 }

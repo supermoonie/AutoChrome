@@ -14,7 +14,7 @@ import com.github.supermoonie.launcher.Launcher;
 import com.github.supermoonie.listener.AbstractEventListener;
 import com.github.supermoonie.listener.DialogEventListener;
 import com.github.supermoonie.listener.EventListener;
-import com.github.supermoonie.todo.Todo;
+import com.github.supermoonie.todo.EventHandler;
 import com.github.supermoonie.type.TabInfo;
 import com.github.supermoonie.ws.WebSocketClientAdapter;
 import com.github.supermoonie.ws.WebSocketContext;
@@ -185,9 +185,9 @@ public class AutoChrome implements
         } while (true);
     }
 
-    public <T> T waitEvent(Todo<T> todo, AbstractEventListener listener, long timeout) {
-        if (null == todo) {
-            throw new NullPointerException("todo is null!");
+    public <T> T waitEvent(EventHandler<T> eventHandler, AbstractEventListener listener, long timeout, boolean remove) {
+        if (null == eventHandler) {
+            throw new NullPointerException("eventHandler is null!");
         }
         if (null == listener) {
             throw new NullPointerException("listener is null!");
@@ -200,7 +200,7 @@ public class AutoChrome implements
         this.eventListeners.add(listener);
         try {
             long start = System.currentTimeMillis();
-            T t = todo.doIt(this);
+            T t = eventHandler.handle(this);
             latch.await(timeout, TimeUnit.MILLISECONDS);
             if (System.currentTimeMillis() - start >= timeout) {
                 throw new TimeOutException("time out in " + timeout + " ms");
@@ -209,8 +209,14 @@ public class AutoChrome implements
         } catch (InterruptedException e) {
             throw new AutoChromeException(e);
         } finally {
-            this.eventListeners.remove(listener);
+            if (remove) {
+                this.eventListeners.remove(listener);
+            }
         }
+    }
+
+    public <T> T waitEvent(EventHandler<T> eventHandler, AbstractEventListener listener, long timeout) {
+        return waitEvent(eventHandler, listener, timeout, false);
     }
 
     @Override
