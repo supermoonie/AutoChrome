@@ -19,7 +19,7 @@ public class DefaultLifecycleEventListener extends AbstractEventListener {
     @Override
     public void onEvent(Event event, Object obj) {
         if (event == Event.PageLifecycleEvent && eventToCapture.toString().equals(((LifecycleEvent) obj).getName())) {
-            getLatch().countDown();
+            latch.countDown();
         }
     }
 }

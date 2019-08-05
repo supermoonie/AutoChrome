@@ -3,11 +3,11 @@ package com.github.supermoonie.auto;
 import com.github.supermoonie.condition.Conditions;
 import com.github.supermoonie.event.Event;
 import com.github.supermoonie.event.database.AddDatabase;
+import com.github.supermoonie.todo.Todo;
 import com.github.supermoonie.listener.AbstractEventListener;
 import com.github.supermoonie.listener.BaseEventListener;
 import com.github.supermoonie.listener.DefaultLifecycleEventListener;
 import com.github.supermoonie.listener.DefaultNetworkListener;
-import com.github.supermoonie.handler.EventHandler;
 import com.github.supermoonie.type.page.LifecycleEventType;
 import com.github.supermoonie.type.page.NavigateResult;
 import org.slf4j.Logger;
@@ -119,9 +119,9 @@ public interface AutoNavigate extends Auto {
         AutoChrome chrome = getThis();
         Logger logger = chrome.getLogger();
         logger.debug(String.format(": (%s, %s, %d)", url, eventType.toString(), timeout));
-        EventHandler<NavigateResult> eventHandler = autoChrome -> autoChrome.navigate(url);
+        Todo<NavigateResult> todo = autoChrome -> autoChrome.navigate(url);
         DefaultLifecycleEventListener listener = new DefaultLifecycleEventListener(eventType);
-        return chrome.waitEvent(eventHandler, listener, timeout);
+        return chrome.waitEvent(todo, listener, timeout);
     }
 
     /**
@@ -152,9 +152,9 @@ public interface AutoNavigate extends Auto {
         AutoChrome chrome = getThis();
         Logger logger = chrome.getLogger();
         logger.debug(String.format(": (%s, %s, %d)", url, event.toString(), timeout));
-        EventHandler<NavigateResult> eventHandler = autoChrome -> autoChrome.navigate(url);
+        Todo<NavigateResult> todo = autoChrome -> autoChrome.navigate(url);
         AbstractEventListener listener = new BaseEventListener(event, resultReference);
-        return chrome.waitEvent(eventHandler, listener, timeout);
+        return chrome.waitEvent(todo, listener, timeout);
     }
 
     /**
@@ -180,9 +180,9 @@ public interface AutoNavigate extends Auto {
         AutoChrome chrome = getThis();
         Logger logger = chrome.getLogger();
         logger.debug(String.format(": (%s, %s, %d)", url, matchUrl, timeout));
-        EventHandler<NavigateResult> eventHandler = autoChrome -> autoChrome.navigate(url);
+        Todo<NavigateResult> todo = autoChrome -> autoChrome.navigate(url);
         DefaultNetworkListener listener = new DefaultNetworkListener(matchUrl);
-        chrome.waitEvent(eventHandler, listener, timeout);
+        chrome.waitEvent(todo, listener, timeout);
         return listener.getRequestId();
     }
 

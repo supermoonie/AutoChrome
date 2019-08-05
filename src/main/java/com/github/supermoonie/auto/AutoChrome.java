@@ -14,7 +14,7 @@ import com.github.supermoonie.launcher.Launcher;
 import com.github.supermoonie.listener.AbstractEventListener;
 import com.github.supermoonie.listener.DialogEventListener;
 import com.github.supermoonie.listener.EventListener;
-import com.github.supermoonie.handler.EventHandler;
+import com.github.supermoonie.todo.Todo;
 import com.github.supermoonie.type.TabInfo;
 import com.github.supermoonie.ws.WebSocketClientAdapter;
 import com.github.supermoonie.ws.WebSocketContext;
@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -185,9 +184,9 @@ public class AutoChrome implements
         } while (true);
     }
 
-    public <T> T waitEvent(EventHandler<T> eventHandler, AbstractEventListener listener, long timeout, boolean remove) {
-        if (null == eventHandler) {
-            throw new NullPointerException("eventHandler is null!");
+    public <T> T waitEvent(Todo<T> todo, AbstractEventListener listener, long timeout) {
+        if (null == todo) {
+            throw new NullPointerException("todo is null!");
         }
         if (null == listener) {
             throw new NullPointerException("listener is null!");
@@ -195,13 +194,11 @@ public class AutoChrome implements
         if (timeout < MIN_TIMEOUT) {
             throw new IllegalArgumentException("timeout must greater than 150 ms!");
         }
-        CountDownLatch latch = new CountDownLatch(1);
-        listener.setLatch(latch);
         this.eventListeners.add(listener);
         try {
             long start = System.currentTimeMillis();
-            T t = eventHandler.handle(this);
-            latch.await(timeout, TimeUnit.MILLISECONDS);
+            T t = todo.doIt(this);
+            listener.getLatch().await(timeout, TimeUnit.MILLISECONDS);
             if (System.currentTimeMillis() - start >= timeout) {
                 throw new TimeOutException("time out in " + timeout + " ms");
             }
@@ -209,14 +206,8 @@ public class AutoChrome implements
         } catch (InterruptedException e) {
             throw new AutoChromeException(e);
         } finally {
-            if (remove) {
-                this.eventListeners.remove(listener);
-            }
+            this.eventListeners.remove(listener);
         }
-    }
-
-    public <T> T waitEvent(EventHandler<T> eventHandler, AbstractEventListener listener, long timeout) {
-        return waitEvent(eventHandler, listener, timeout, false);
     }
 
     @Override

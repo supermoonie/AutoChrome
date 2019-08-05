@@ -28,7 +28,7 @@ public class BaseEventListener extends AbstractEventListener {
             if (null != resultRef) {
                 resultRef.set(obj);
             }
-            getLatch().countDown();
+            latch.countDown();
         }
     }
 }

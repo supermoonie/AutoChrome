@@ -8,13 +8,10 @@ import java.util.concurrent.CountDownLatch;
  */
 public abstract class AbstractEventListener implements EventListener {
 
-    private CountDownLatch latch;
+    protected CountDownLatch latch = new CountDownLatch(1);
 
     public CountDownLatch getLatch() {
         return latch;
     }
 
-    public void setLatch(CountDownLatch latch) {
-        this.latch = latch;
-    }
 }

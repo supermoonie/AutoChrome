@@ -45,7 +45,7 @@ public class DefaultNetworkListener extends AbstractEventListener {
             case NetworkLoadingFinished:
                 LoadingFinished loadingFinished = (LoadingFinished) obj;
                 if (loadingFinished.getRequestId().equals(requestIdRef.get())) {
-                    getLatch().countDown();
+                    latch.countDown();
                 }
                 break;
             default:

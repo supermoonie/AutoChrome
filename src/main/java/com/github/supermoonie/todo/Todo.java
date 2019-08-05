@@ -1,4 +1,4 @@
-package com.github.supermoonie.handler;
+package com.github.supermoonie.todo;
 
 import com.github.supermoonie.auto.AutoChrome;
 
@@ -6,7 +6,7 @@ import com.github.supermoonie.auto.AutoChrome;
  * @author wangchao
  * @date 2018/12/1 10:30
  */
-public interface EventHandler<T> {
+public interface Todo<T> {
 
     /**
      * do it
@@ -14,5 +14,5 @@ public interface EventHandler<T> {
      * @param autoChrome auto chrome
      * @return t
      */
-    T handle(AutoChrome autoChrome);
+    T doIt(AutoChrome autoChrome);
 }

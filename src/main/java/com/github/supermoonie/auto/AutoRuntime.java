@@ -5,10 +5,10 @@ import com.github.supermoonie.condition.Condition;
 import com.github.supermoonie.condition.ExpressionsCondition;
 import com.github.supermoonie.event.Event;
 import com.github.supermoonie.exception.JavaScriptException;
+import com.github.supermoonie.todo.Todo;
 import com.github.supermoonie.listener.AbstractEventListener;
 import com.github.supermoonie.listener.BaseEventListener;
 import com.github.supermoonie.listener.DefaultNetworkListener;
-import com.github.supermoonie.handler.EventHandler;
 import com.github.supermoonie.type.network.GetResponseBodyResult;
 import com.github.supermoonie.type.runtime.EvaluateResult;
 import com.github.supermoonie.type.runtime.RemoteObject;
@@ -105,13 +105,13 @@ public interface AutoRuntime extends Auto {
         if (isEmpty(expression)) {
             throw new IllegalArgumentException("expression is empty!");
         }
-        EventHandler<Void> eventHandler = autoChrome -> {
+        Todo<Void> todo = autoChrome -> {
             autoChrome.evaluate(expression);
             return null;
         };
         DefaultNetworkListener listener = new DefaultNetworkListener(matchUrl);
         AutoChrome chrome = getThis();
-        chrome.waitEvent(eventHandler, listener, timeout);
+        chrome.waitEvent(todo, listener, timeout);
         String requestId = listener.getRequestId();
         return chrome.getNetwork().getResponseBody(requestId);
     }
@@ -171,9 +171,9 @@ public interface AutoRuntime extends Auto {
         AutoChrome chrome = getThis();
         Logger logger = chrome.getLogger();
         logger.debug(String.format(": (%s, %s, %d, %s)", expression, event.toString(), timeout, resultReference.toString()));
-        EventHandler<EvaluateResult> eventHandler = autoChrome -> autoChrome.evaluate(expression);
+        Todo<EvaluateResult> todo = autoChrome -> autoChrome.evaluate(expression);
         AbstractEventListener listener = new BaseEventListener(event, resultReference);
-        return getThis().waitEvent(eventHandler, listener, timeout);
+        return getThis().waitEvent(todo, listener, timeout);
     }
 
     /**
