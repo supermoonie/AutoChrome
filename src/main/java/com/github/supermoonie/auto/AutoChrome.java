@@ -14,7 +14,7 @@ import com.github.supermoonie.launcher.Launcher;
 import com.github.supermoonie.listener.AbstractEventListener;
 import com.github.supermoonie.listener.DialogEventListener;
 import com.github.supermoonie.listener.EventListener;
-import com.github.supermoonie.todo.EventHandler;
+import com.github.supermoonie.handler.EventHandler;
 import com.github.supermoonie.type.TabInfo;
 import com.github.supermoonie.ws.WebSocketClientAdapter;
 import com.github.supermoonie.ws.WebSocketContext;

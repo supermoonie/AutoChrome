@@ -1,4 +1,4 @@
-package com.github.supermoonie.todo;
+package com.github.supermoonie.handler;
 
 import com.github.supermoonie.auto.AutoChrome;
 
