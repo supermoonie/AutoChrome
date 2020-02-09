@@ -4,7 +4,7 @@ import com.github.supermoonie.auto.AutoChrome;
 
 /**
  * @author wangchao
- * @date 2018/12/1 10:30
+ * @since 2018/12/1 10:30
  */
 public interface Todo<T> {
 

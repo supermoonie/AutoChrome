@@ -2,7 +2,7 @@ package com.github.supermoonie.type.input;
 
 /**
  * @author wangchao
- * @date 2018/11/23 00:14
+ * @since 2018/11/23 00:14
  */
 public enum MouseEventType {
 

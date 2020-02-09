@@ -10,7 +10,7 @@ import com.github.supermoonie.type.page.Viewport;
  * This domain emulates different environments for the page.
  *
  * @author supermoonie
- * @date 2018/11/14
+ * @since 2018/11/14
  */
 @Domain("Emulation")
 public interface Emulation {

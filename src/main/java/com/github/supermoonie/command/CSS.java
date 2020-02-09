@@ -16,7 +16,7 @@ import java.util.List;
  * A client can also keep track of stylesheets via the styleSheetAdded/styleSheetRemoved events and subsequently load the required stylesheet contents using the getStyleSheet[Text]() methods.
  *
  * @author supermoonie
- * @date 2018/11/7 17:48
+ * @since 2018/11/7 17:48
  */
 @Experimental
 @Domain("CSS")

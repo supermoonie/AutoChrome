@@ -6,7 +6,7 @@ import com.github.supermoonie.event.page.JavascriptDialogOpening;
 
 /**
  * @author supermoonie
- * @date 2018/11/29
+ * @since 2018/11/29
  */
 public class DialogEventListener implements EventListener {
 

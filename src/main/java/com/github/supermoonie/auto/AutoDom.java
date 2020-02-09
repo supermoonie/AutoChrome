@@ -9,7 +9,7 @@ import static com.github.supermoonie.util.StringUtils.isEmpty;
 
 /**
  * @author supermoonie
- * @date 2018/11/22
+ * @since 2018/11/22
  */
 public interface AutoDom extends Auto {
 
@@ -36,8 +36,6 @@ public interface AutoDom extends Auto {
             throw new IllegalArgumentException("selector is empty!");
         }
         AutoChrome autoChrome = getThis();
-        Logger logger = autoChrome.getLogger();
-        logger.debug(String.format(": (%s)", selector));
         Integer documentId = getDocumentId();
         return autoChrome.getDom().querySelector(documentId, selector);
     }
@@ -53,8 +51,6 @@ public interface AutoDom extends Auto {
             throw new IllegalArgumentException("selector is empty!");
         }
         AutoChrome autoChrome = getThis();
-        Logger logger = autoChrome.getLogger();
-        logger.debug(String.format(": (%s)", selector));
         Integer documentId = getDocumentId();
         return autoChrome.getDom().querySelectorAll(documentId, selector);
     }
@@ -70,8 +66,6 @@ public interface AutoDom extends Auto {
             throw new IllegalArgumentException("selector is empty!");
         }
         AutoChrome autoChrome = getThis();
-        Logger logger = autoChrome.getLogger();
-        logger.debug(String.format(": (%s)", selector));
         Integer nodeId = querySelector(selector);
         if (null == nodeId) {
             return null;
@@ -90,8 +84,6 @@ public interface AutoDom extends Auto {
             throw new IllegalArgumentException("selector is empty!");
         }
         AutoChrome autoChrome = getThis();
-        Logger logger = autoChrome.getLogger();
-        logger.debug(String.format(": (%s)", selector));
         Integer nodeId = querySelector(selector);
         if (null == nodeId) {
             return null;
@@ -110,8 +102,6 @@ public interface AutoDom extends Auto {
             return null;
         }
         AutoChrome autoChrome = getThis();
-        Logger logger = autoChrome.getLogger();
-        logger.debug(String.format(": (%d)", nodeId));
         List<List<Double>> contentQuads = autoChrome.getDom().getContentQuads(nodeId, null, null);
         double x = contentQuads.get(0).get(0) + (contentQuads.get(0).get(2) - contentQuads.get(0).get(0)) / 2;
         double y = contentQuads.get(0).get(1) + (contentQuads.get(0).get(7) - contentQuads.get(0).get(1)) / 2;

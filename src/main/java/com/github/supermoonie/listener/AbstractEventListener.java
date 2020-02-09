@@ -4,7 +4,7 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * @author wangchao
- * @date 2018/12/1 11:05
+ * @since 2018/12/1 11:05
  */
 public abstract class AbstractEventListener implements EventListener {
 

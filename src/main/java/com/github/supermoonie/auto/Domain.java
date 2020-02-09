@@ -5,7 +5,7 @@ import com.github.supermoonie.command.Runtime;
 
 /**
  * @author supermoonie
- * @date 2018/11/9
+ * @since 2018/11/9
  */
 public interface Domain extends Auto {
 

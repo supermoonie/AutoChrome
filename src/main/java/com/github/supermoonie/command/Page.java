@@ -6,7 +6,7 @@ import com.github.supermoonie.type.page.*;
 
 /**
  * @author Administrator
- * @date 2018/8/28 0028
+ * @since 2018/8/28 0028
  */
 @Domain("Page")
 public interface Page {

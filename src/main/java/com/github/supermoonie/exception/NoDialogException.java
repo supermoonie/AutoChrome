@@ -2,7 +2,7 @@ package com.github.supermoonie.exception;
 
 /**
  * @author supermoonie
- * @date 2018/11/27
+ * @since 2018/11/27
  */
 public class NoDialogException extends AutoChromeException {
 

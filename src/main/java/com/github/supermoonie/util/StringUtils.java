@@ -2,7 +2,7 @@ package com.github.supermoonie.util;
 
 /**
  * @author supermoonie
- * @date 2018/11/29
+ * @since 2018/11/29
  */
 public final class StringUtils {
 

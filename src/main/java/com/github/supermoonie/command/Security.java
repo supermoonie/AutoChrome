@@ -6,7 +6,7 @@ import com.github.supermoonie.annotation.Param;
 
 /**
  * @author supermoonie
- * @date 2018/11/28
+ * @since 2018/11/28
  */
 @Domain("Security")
 public interface Security {

@@ -2,7 +2,7 @@ package com.github.supermoonie.type.page;
 
 /**
  * @author wangchao
- * @date 2018/12/1 11:56
+ * @since 2018/12/1 11:56
  */
 public enum LifecycleEventType {
     /**

@@ -2,7 +2,7 @@ package com.github.supermoonie.exception;
 
 /**
  * @author supermoonie
- * @date 2018/11/12
+ * @since 2018/11/12
  */
 public class NavigateFailedException extends AutoChromeException {
     public NavigateFailedException(String message) {

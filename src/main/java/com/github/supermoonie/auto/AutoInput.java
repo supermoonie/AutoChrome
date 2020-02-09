@@ -15,7 +15,7 @@ import static com.github.supermoonie.util.StringUtils.isEmpty;
 
 /**
  * @author wangchao
- * @date 2018/11/25 10:12
+ * @since 2018/11/25 10:12
  */
 public interface AutoInput extends Auto {
 

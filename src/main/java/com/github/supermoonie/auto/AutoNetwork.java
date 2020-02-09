@@ -14,7 +14,7 @@ import static com.github.supermoonie.util.StringUtils.*;
 
 /**
  * @author supermoonie
- * @date 2018/11/22
+ * @since 2018/11/22
  */
 public interface AutoNetwork extends Auto {
 

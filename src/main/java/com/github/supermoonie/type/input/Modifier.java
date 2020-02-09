@@ -2,7 +2,7 @@ package com.github.supermoonie.type.input;
 
 /**
  * @author wangchao
- * @date 2019/3/5 06:57
+ * @since 2019/3/5 06:57
  */
 public enum Modifier {
     /**

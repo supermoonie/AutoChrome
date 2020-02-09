@@ -5,7 +5,7 @@ import com.github.supermoonie.util.StringUtils;
 
 /**
  * @author supermoonie
- * @date 2019/3/12
+ * @since 2019/3/12
  */
 public class ExpressionReturnTrueCondition implements Condition {
 

@@ -2,7 +2,7 @@ package com.github.supermoonie.exception;
 
 /**
  * @author supermoonie
- * @date 2018/11/7 14:42
+ * @since 2018/11/7 14:42
  */
 public class CommandException extends AutoChromeException {
 

@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 
 /**
  * @author supermoonie
- * @date 2018/11/21
+ * @since 2018/11/21
  */
 public interface AutoWindow extends Auto {
 

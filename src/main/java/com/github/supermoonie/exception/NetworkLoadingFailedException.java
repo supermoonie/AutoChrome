@@ -2,7 +2,7 @@ package com.github.supermoonie.exception;
 
 /**
  * @author wangchao
- * @date 2018/12/2 09:56
+ * @since 2018/12/2 09:56
  */
 public class NetworkLoadingFailedException extends AutoChromeException {
 

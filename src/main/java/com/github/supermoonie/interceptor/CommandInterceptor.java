@@ -6,6 +6,7 @@ import com.github.supermoonie.annotation.Param;
 import com.github.supermoonie.annotation.Returns;
 import com.github.supermoonie.ws.WebSocketClientAdapter;
 import com.github.supermoonie.ws.WebSocketContext;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.slf4j.Logger;
@@ -22,11 +23,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author supermoonie
- * @date 2018/11/2 11:53
+ * @since 2018/11/2 11:53
  */
+@Slf4j
 public class CommandInterceptor implements MethodInterceptor {
-
-    private final Logger logger = LoggerFactory.getLogger(CommandInterceptor.class);
 
     private static final String ENABLE = "enable";
 
@@ -80,7 +80,7 @@ public class CommandInterceptor implements MethodInterceptor {
         }
         json.put("params", params);
         String message = json.toJSONString();
-        logger.debug("send: " + message);
+        log.debug("send: {}", message);
         WebSocketContext context = new WebSocketContext();
         contexts.put(id, context);
         webSocketClient.send(message);

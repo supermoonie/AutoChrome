@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * @author supermoonie
- * @date 2018/11/7 10:16
+ * @since 2018/11/7 10:16
  */
 public class WebSocketClientAdapter extends WebSocketClient {
 

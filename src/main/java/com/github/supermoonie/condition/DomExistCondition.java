@@ -4,7 +4,7 @@ import com.github.supermoonie.auto.AutoChrome;
 
 /**
  * @author wangchao
- * @date 2018/12/1 14:58
+ * @since 2018/12/1 14:58
  */
 public class DomExistCondition implements Condition {
 

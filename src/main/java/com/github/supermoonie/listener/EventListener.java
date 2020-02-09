@@ -4,7 +4,7 @@ import com.github.supermoonie.event.Event;
 
 /**
  * @author supermoonie
- * @date 2018/11/12
+ * @since 2018/11/12
  */
 public interface EventListener {
 

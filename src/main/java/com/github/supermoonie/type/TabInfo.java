@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * @author supermoonie
- * @date 2018/11/9
+ * @since 2018/11/9
  */
 @Data
 public class TabInfo {

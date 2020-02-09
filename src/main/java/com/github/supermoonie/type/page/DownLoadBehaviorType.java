@@ -4,7 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * @author supermoonie
- * @date 2018/11/28
+ * @since 2018/11/28
  */
 public enum DownLoadBehaviorType {
 

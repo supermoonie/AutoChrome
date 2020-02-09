@@ -46,7 +46,7 @@ import static java.nio.file.Paths.get;
 
 /**
  * @author supermoonie
- * @date 2018/11/7 10:11
+ * @since 2018/11/7 10:11
  */
 public class AutoChrome implements
         Closeable, AutoWindow, AutoDom, Domain, AutoInput, AutoNetwork, AutoPage, AutoNavigate, AutoRuntime, Auto {
@@ -61,7 +61,7 @@ public class AutoChrome implements
 
     private WebSocketClientAdapter webSocketClient;
 
-    private Map<Class, Object> proxies = new ConcurrentHashMap<>();
+    private final Map<Class, Object> proxies = new ConcurrentHashMap<>();
 
     private final List<EventListener> eventListeners = new CopyOnWriteArrayList<>();
 
@@ -107,17 +107,19 @@ public class AutoChrome implements
         if (proxy != null) {
             return proxy;
         }
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(clazz);
-        Callback[] callbacks = new Callback[]{invocationHandler, DefaultCommandInterceptor.instance()};
-        enhancer.setCallbacks(callbacks);
-        enhancer.setCallbackFilter(CommandCallBackFilter.instance());
-        proxy = enhancer.create();
-        Object existing = proxies.putIfAbsent(clazz, proxy);
-        if (existing != null) {
-            return existing;
+        synchronized (this.proxies) {
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(clazz);
+            Callback[] callbacks = new Callback[]{invocationHandler, DefaultCommandInterceptor.instance()};
+            enhancer.setCallbacks(callbacks);
+            enhancer.setCallbackFilter(CommandCallBackFilter.instance());
+            proxy = enhancer.create();
+            Object existing = proxies.putIfAbsent(clazz, proxy);
+            if (existing != null) {
+                return existing;
+            }
+            return proxy;
         }
-        return proxy;
     }
 
     private TabInfo getTabInfo(int port, String currentTitle, String currentUrl, long timeOut) {

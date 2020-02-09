@@ -4,7 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * @author wangchao
- * @date 2018/11/22 21:38
+ * @since 2018/11/22 21:38
  */
 public enum KeyEventType {
 

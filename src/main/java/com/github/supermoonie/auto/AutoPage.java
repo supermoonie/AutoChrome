@@ -18,7 +18,7 @@ import static com.github.supermoonie.util.StringUtils.isEmpty;
 
 /**
  * @author supermoonie
- * @date 2018/11/27
+ * @since 2018/11/27
  */
 public interface AutoPage extends Auto {
 

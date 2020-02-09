@@ -2,7 +2,7 @@ package com.github.supermoonie.condition;
 
 /**
  * @author supermoonie
- * @date 2018/11/9
+ * @since 2018/11/9
  */
 public class Conditions {
 

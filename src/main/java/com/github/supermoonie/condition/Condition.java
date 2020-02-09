@@ -4,7 +4,7 @@ import com.github.supermoonie.auto.AutoChrome;
 
 /**
  * @author supermoonie
- * @date 2018/11/9
+ * @since 2018/11/9
  */
 public interface Condition {
 

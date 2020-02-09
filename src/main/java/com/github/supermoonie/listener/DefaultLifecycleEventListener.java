@@ -6,7 +6,7 @@ import com.github.supermoonie.type.page.LifecycleEventType;
 
 /**
  * @author wangchao
- * @date 2018/12/1 11:44
+ * @since 2018/12/1 11:44
  */
 public class DefaultLifecycleEventListener extends AbstractEventListener {
 

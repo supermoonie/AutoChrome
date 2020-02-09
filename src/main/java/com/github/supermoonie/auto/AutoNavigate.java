@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author supermoonie
- * @date 2018/11/26
+ * @since 2018/11/26
  */
 public interface AutoNavigate extends Auto {
 
