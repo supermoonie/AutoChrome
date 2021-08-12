@@ -21,6 +21,10 @@ import com.github.supermoonie.ws.WebSocketContext;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +33,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,15 +135,13 @@ public class AutoChrome implements
             HttpURLConnection connection = null;
             try {
                 Thread.sleep(1000);
-                URL url = new URL(String.format("http://localhost:%d/json", port));
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setConnectTimeout(1000);
-                List<String> lines = IOUtils.readLines(connection.getInputStream(), "UTF-8");
-                StringBuilder builder = new StringBuilder();
-                for (String line : lines) {
-                    builder.append(line);
-                }
-                JSONArray targetArray = JSONArray.parseArray(builder.toString());
+                JSONArray targetArray = Request.Get(String.format("http://127.0.0.1:%d/json", port)).execute().handleResponse(new ResponseHandler<JSONArray>() {
+                    @Override
+                    public JSONArray handleResponse(HttpResponse response) throws IOException {
+                        String content = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+                        return JSONArray.parseArray(content);
+                    }
+                });
                 for (int i = 0; i < targetArray.size(); i++) {
                     JSONObject targetJson = targetArray.getJSONObject(i);
                     if ("page".equals(targetJson.getString("type"))) {
@@ -151,6 +153,7 @@ public class AutoChrome implements
                     }
                 }
             } catch (IOException | InterruptedException ignore) {
+                ignore.printStackTrace();
             } finally {
                 IOUtils.close(connection);
             }
