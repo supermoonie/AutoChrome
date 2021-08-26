@@ -55,7 +55,7 @@ import static java.nio.file.Paths.get;
 public class AutoChrome implements
         Closeable, AutoWindow, AutoDom, Domain, AutoInput, AutoNetwork, AutoPage, AutoNavigate, AutoRuntime, Auto {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final int MIN_TIMEOUT = 150;
 

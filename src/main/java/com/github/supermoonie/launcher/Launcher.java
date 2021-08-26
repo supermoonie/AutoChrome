@@ -149,7 +149,7 @@ public class Launcher {
     }
 
     public String findChrome() {
-        String chromeExecutablePath = null;
+        String chromeExecutablePath;
         if (WINDOWS) {
             chromeExecutablePath = findChromeWinPath();
         } else if (OSX) {
