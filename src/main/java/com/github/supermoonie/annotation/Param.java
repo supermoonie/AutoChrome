@@ -7,6 +7,8 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * 参数注解
+ *
  * @author supermoonie
  */
 @Retention(RUNTIME)

@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WebSocketContext {
 
-    private CountDownLatch latch = new CountDownLatch(1);
+    private final CountDownLatch latch = new CountDownLatch(1);
 
     private JSONObject data;
 

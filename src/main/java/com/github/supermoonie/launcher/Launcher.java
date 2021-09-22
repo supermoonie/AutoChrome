@@ -1,8 +1,7 @@
 package com.github.supermoonie.launcher;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,32 +9,25 @@ import java.io.InputStream;
 import java.net.BindException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getProperty;
 import static java.util.Arrays.asList;
-import static java.util.Locale.ENGLISH;
 
 /**
  * @author Administrator
  * @since 2018/8/20 0020
  */
+@Slf4j
 public class Launcher {
 
-    private final Logger logger = LoggerFactory.getLogger(Launcher.class);
-
-    private static final String OS = getProperty("os.name").toLowerCase(ENGLISH);
-
+    private static final String OS = getProperty("os.name").toLowerCase(Locale.ENGLISH);
     private static final boolean WINDOWS = OS.startsWith("windows");
-
     private static final boolean OSX = OS.startsWith("mac");
 
-    private static final List<String> DEFAULT_ARGS = new ArrayList<String>() {{
+    private static final List<String> DEFAULT_ARGS = new ArrayList<>() {{
         // Disable built-in Google Translate service
         add("--disable-translate");
         // Disable all chrome extensions entirely
@@ -123,7 +115,7 @@ public class Launcher {
         command = new ArrayList<>();
         command.add(chromePath);
         command.addAll(args);
-        logger.debug(command.toString());
+        log.debug(command.toString());
         ProcessBuilder builder = new ProcessBuilder(command);
         process = builder.start();
         if (!process.isAlive()) {
@@ -153,7 +145,7 @@ public class Launcher {
         if (WINDOWS) {
             chromeExecutablePath = findChromeWinPath();
         } else if (OSX) {
-            chromeExecutablePath  = findChromeOsxPath();
+            chromeExecutablePath = findChromeOsxPath();
         } else {
             chromeExecutablePath = "google-chrome";
         }
