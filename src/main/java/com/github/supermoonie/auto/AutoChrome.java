@@ -18,7 +18,6 @@ import com.github.supermoonie.todo.Todo;
 import com.github.supermoonie.type.TabInfo;
 import com.github.supermoonie.ws.WebSocketClientAdapter;
 import com.github.supermoonie.ws.WebSocketContext;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.io.IOUtils;
@@ -26,6 +25,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -51,9 +52,10 @@ import static java.nio.file.Paths.get;
  * @author supermoonie
  * @since 2018/11/7 10:11
  */
-@Slf4j
 public class AutoChrome implements
         Closeable, AutoWindow, AutoDom, Domain, AutoInput, AutoNetwork, AutoPage, AutoNavigate, AutoRuntime, Auto {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final int MIN_TIMEOUT = 150;
 
@@ -333,5 +335,9 @@ public class AutoChrome implements
             this.otherArgs = otherArgs;
             return this;
         }
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 }

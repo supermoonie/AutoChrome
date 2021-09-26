@@ -35,6 +35,20 @@ public interface Browser {
     void resetPermissions(@Optional @Param("browserContextId") String browserContextId);
 
     /**
+     * Set the behavior when downloading a file.
+     *
+     * @param behavior         Whether to allow all or deny all download requests, or use default Chrome behavior if available (otherwise deny). |allowAndName| allows download and names files according to their dowmload guids.
+     *                         Allowed Values: deny, allow, allowAndName, default
+     * @param browserContextId BrowserContext to set download behavior. When omitted, default browser context is used.
+     * @param downloadPath     The default path to save downloaded files to. This is required if behavior is set to 'allow' or 'allowAndName'.
+     * @param eventsEnabled    Whether to emit download events (defaults to false).
+     */
+    void setDownloadBehavior(@Param("behavior") String behavior,
+                             @Optional @Param("browserContextId") String browserContextId,
+                             @Optional @Param("downloadPath") String downloadPath,
+                             @Optional @Param("eventsEnabled") Boolean eventsEnabled);
+
+    /**
      * Close browser gracefully.
      */
     void close();

@@ -31,7 +31,7 @@ public class Launcher {
         // Disable built-in Google Translate service
         add("--disable-translate");
         // Disable all chrome extensions entirely
-        add("--disable-extensions");
+//        add("--disable-extensions");
         // Disable various background network services, including extension updating,
         // safe browsing service, upgrade detector, translate, UMA
         add("--disable-background-networking");
@@ -48,7 +48,7 @@ public class Launcher {
         // Skip first run wizards
         add("--no-first-run");
         add("--no-default-browser-check");
-        add("--disable-plugin-power-saver");
+//        add("--disable-plugin-power-saver");
         add("--disable-popup-blocking");
         add("--disable-background-timer-throttling");
         add("--disable-breakpad");
@@ -62,7 +62,7 @@ public class Launcher {
         add("--use-mock-keychain");
         add("--disable-infobars");
         add("--process-per-tab");
-        add("--disable-web-security");
+//        add("--disable-web-security");
         add("about:blank");
     }};
 
